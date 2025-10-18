@@ -1,33 +1,39 @@
 export const COLORS = {
-  // Primary theme colors
-  primary: "#FBBF24", // Mango Yellow
-  accent: "#047857", // Deep Green
-  background: "#F9FAFB", // Neutral background
+  // Mango Theme Primary Colors
+  primary: "#FFC107", // Mango Yellow
+  primaryDark: "#FFB300", // Darker Mango
+  secondary: "#2E7D32", // Dark Green (leaves)
+  accent: "#FFB74D", // Orange accent
+  background: "#FFF8E1", // Light Cream
 
   // Status colors for confidence levels
-  high: "#10B981", // Green for high confidence (>85%)
-  medium: "#F59E0B", // Yellow for medium confidence (60-85%)
-  low: "#EF4444", // Red for low confidence (<60%)
+  high: "#2E7D32", // Green for high confidence (>85%)
+  medium: "#FFC107", // Yellow for medium confidence (60-85%)
+  low: "#FF6F00", // Orange-Red for low confidence (<60%)
 
   // Severity colors for alerts
-  severityLow: "#10B981", // Green
-  severityMedium: "#F59E0B", // Yellow
-  severityHigh: "#EF4444", // Red
+  severityLow: "#4CAF50", // Green
+  severityMedium: "#FF9800", // Orange
+  severityHigh: "#F44336", // Red
 
   // Text colors
-  textPrimary: "#111827",
-  textSecondary: "#6B7280",
-  textLight: "#9CA3AF",
+  textPrimary: "#2E2E2E", // Dark Gray
+  textSecondary: "#555555", // Medium Gray
+  textLight: "#7A7A7A", // Light Gray
+  textWhite: "#FFFFFF",
 
   // UI colors
   white: "#FFFFFF",
-  border: "#E5E7EB",
+  cream: "#FFF8E1",
+  lightCream: "#FFFBF0",
+  border: "#FFE082",
   cardBackground: "#FFFFFF",
-  shadow: "#00000010",
+  shadow: "#00000015",
+  overlay: "#00000040",
 
-  // Seasonal theme colors
-  summer: "#FBA834",
-  autumn: "#DC2626",
-  monsoon: "#3B82F6",
-  winter: "#6366F1",
+  // Gradient colors
+  gradientStart: "#FFC107",
+  gradientEnd: "#FFB74D",
+  gradientGreenStart: "#2E7D32",
+  gradientGreenEnd: "#388E3C",
 };

@@ -12,8 +12,13 @@ export default function LoadingIndicator({
   color = COLORS.primary,
 }: LoadingIndicatorProps) {
   return (
-    <View className="flex-1 justify-center items-center bg-background">
-      <ActivityIndicator size={size} color={color} />
+    <View className="flex-1 justify-center items-center">
+      <View
+        className="rounded-full p-6"
+        style={{ backgroundColor: `${COLORS.primary}10` }}
+      >
+        <ActivityIndicator size={size} color={color} />
+      </View>
     </View>
   );
 }

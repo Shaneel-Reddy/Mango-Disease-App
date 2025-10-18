@@ -100,24 +100,46 @@ export default function Index() {
       className="flex-1"
       style={{ backgroundColor: COLORS.background }}
     >
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
       <ScrollView
-        className="flex-1 px-4"
+        className="flex-1"
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
             tintColor={COLORS.primary}
+            colors={[COLORS.primary]}
           />
         }
+        showsVerticalScrollIndicator={false}
       >
-        {/* Welcome Section */}
-        <View className="mt-6 mb-6">
-          <Text className="text-2xl font-bold text-gray-900 mb-2">
-            Welcome to Mango Care
-          </Text>
-          <Text className="text-gray-600 text-base leading-6">
+        {/* Welcome Section with Gradient Accent */}
+        <View className="mt-8 mb-8">
+          <View className="flex-row items-center mb-3">
+            <View
+              className="w-12 h-12 rounded-full items-center justify-center mr-3"
+              style={{ backgroundColor: COLORS.primary }}
+            >
+              <Text className="text-3xl">🥭</Text>
+            </View>
+            <View className="flex-1">
+              <Text
+                className="text-3xl font-bold"
+                style={{ color: COLORS.textPrimary }}
+              >
+                Mango Care
+              </Text>
+              <Text className="text-sm" style={{ color: COLORS.secondary }}>
+                AI-Powered Leaf Analysis
+              </Text>
+            </View>
+          </View>
+          <Text
+            className="text-base leading-6 mt-2"
+            style={{ color: COLORS.textSecondary }}
+          >
             Upload or capture a photo of a mango leaf to detect diseases and get
             treatment recommendations.
           </Text>
@@ -143,10 +165,19 @@ export default function Index() {
 
         {/* Loading State */}
         {loading && (
-          <View className="py-8">
+          <View className="py-10">
             <LoadingIndicator />
-            <Text className="text-center text-gray-600 mt-4">
+            <Text
+              className="text-center mt-5 text-base font-medium"
+              style={{ color: COLORS.textSecondary }}
+            >
               Analyzing your mango leaf image...
+            </Text>
+            <Text
+              className="text-center mt-2 text-sm"
+              style={{ color: COLORS.textLight }}
+            >
+              This may take a few moments
             </Text>
           </View>
         )}
@@ -154,46 +185,130 @@ export default function Index() {
         {/* Prediction Results */}
         {prediction && !loading && (
           <View className="mb-6">
-            <Text className="text-lg font-semibold text-gray-900 mb-3">
-              Analysis Results
-            </Text>
+            <View className="flex-row items-center mb-4">
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: `${COLORS.secondary}20` }}
+              >
+                <Text className="text-2xl">🔬</Text>
+              </View>
+              <Text
+                className="text-xl font-bold"
+                style={{ color: COLORS.textPrimary }}
+              >
+                Analysis Results
+              </Text>
+            </View>
             <PredictionCard prediction={prediction} />
           </View>
         )}
 
         {/* Tips Section */}
         {!loading && !prediction && (
-          <View className="bg-white rounded-lg p-6 shadow-md border border-gray-100 mb-6">
-            <Text className="text-lg font-semibold text-gray-900 mb-3">
-              📷 Photography Tips
-            </Text>
-            <View className="space-y-2">
-              <Text className="text-gray-700 text-sm">
-                • Ensure good lighting - natural daylight works best
+          <View
+            className="rounded-3xl p-6 shadow-md mb-6"
+            style={{
+              backgroundColor: COLORS.white,
+              elevation: 3,
+            }}
+          >
+            <View className="flex-row items-center mb-4">
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: `${COLORS.primary}20` }}
+              >
+                <Text className="text-2xl">📷</Text>
+              </View>
+              <Text
+                className="text-xl font-bold"
+                style={{ color: COLORS.textPrimary }}
+              >
+                Photography Tips
               </Text>
-              <Text className="text-gray-700 text-sm">
-                • Fill the frame with the leaf for better accuracy
-              </Text>
-              <Text className="text-gray-700 text-sm">
-                • Keep the camera steady and focus on the leaf
-              </Text>
-              <Text className="text-gray-700 text-sm">
-                • Show any visible spots, discoloration, or damage
-              </Text>
+            </View>
+            <View className="space-y-3">
+              <View className="flex-row items-start mb-3">
+                <View
+                  className="w-2 h-2 rounded-full mt-2 mr-3"
+                  style={{ backgroundColor: COLORS.secondary }}
+                />
+                <Text
+                  className="flex-1 text-sm leading-6"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  Ensure good lighting - natural daylight works best
+                </Text>
+              </View>
+              <View className="flex-row items-start mb-3">
+                <View
+                  className="w-2 h-2 rounded-full mt-2 mr-3"
+                  style={{ backgroundColor: COLORS.secondary }}
+                />
+                <Text
+                  className="flex-1 text-sm leading-6"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  Fill the frame with the leaf for better accuracy
+                </Text>
+              </View>
+              <View className="flex-row items-start mb-3">
+                <View
+                  className="w-2 h-2 rounded-full mt-2 mr-3"
+                  style={{ backgroundColor: COLORS.secondary }}
+                />
+                <Text
+                  className="flex-1 text-sm leading-6"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  Keep the camera steady and focus on the leaf
+                </Text>
+              </View>
+              <View className="flex-row items-start">
+                <View
+                  className="w-2 h-2 rounded-full mt-2 mr-3"
+                  style={{ backgroundColor: COLORS.secondary }}
+                />
+                <Text
+                  className="flex-1 text-sm leading-6"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  Show any visible spots, discoloration, or damage
+                </Text>
+              </View>
             </View>
           </View>
         )}
 
-        {/* Quick Stats */}
+        {/* Quick Stats / Location Card */}
         {location && (
-          <View className="bg-white rounded-lg p-4 shadow-md border border-gray-100 mb-6">
-            <Text className="text-lg font-semibold text-gray-900 mb-2">
-              📍 Your Location
-            </Text>
-            <Text className="text-gray-600 text-sm">
+          <View
+            className="rounded-3xl p-5 shadow-md mb-6"
+            style={{
+              backgroundColor: COLORS.white,
+              elevation: 3,
+            }}
+          >
+            <View className="flex-row items-center mb-3">
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: `${COLORS.accent}20` }}
+              >
+                <Text className="text-2xl">📍</Text>
+              </View>
+              <Text
+                className="text-xl font-bold"
+                style={{ color: COLORS.textPrimary }}
+              >
+                Your Location
+              </Text>
+            </View>
+            <Text
+              className="text-base mb-2"
+              style={{ color: COLORS.textSecondary }}
+            >
               {formatLocation(location)}
             </Text>
-            <Text className="text-gray-500 text-xs mt-1">
+            <Text className="text-xs" style={{ color: COLORS.textLight }}>
               Lat: {location.latitude.toFixed(4)}, Lon:{" "}
               {location.longitude.toFixed(4)}
             </Text>

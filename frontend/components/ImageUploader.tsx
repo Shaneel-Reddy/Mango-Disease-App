@@ -114,56 +114,89 @@ export default function ImageUploader({
     <View className="w-full">
       {selectedImage ? (
         <View className="relative">
-          <Image
-            source={{ uri: selectedImage }}
-            className="w-full h-64 rounded-lg"
-            resizeMode="cover"
-          />
+          <View
+            className="rounded-3xl overflow-hidden shadow-lg"
+            style={{ elevation: 4 }}
+          >
+            <Image
+              source={{ uri: selectedImage }}
+              className="w-full h-72"
+              resizeMode="cover"
+            />
+          </View>
           {loading && (
-            <View className="absolute inset-0 bg-black/50 rounded-lg justify-center items-center">
-              <ActivityIndicator size="large" color={COLORS.white} />
-              <Text className="text-white mt-2 font-medium">
-                Analyzing image...
-              </Text>
+            <View
+              className="absolute inset-0 rounded-3xl justify-center items-center"
+              style={{ backgroundColor: COLORS.overlay }}
+            >
+              <View className="bg-white/90 rounded-3xl p-6 items-center">
+                <ActivityIndicator size="large" color={COLORS.primary} />
+                <Text
+                  className="mt-3 font-semibold"
+                  style={{ color: COLORS.textPrimary }}
+                >
+                  Analyzing image...
+                </Text>
+              </View>
             </View>
           )}
           {!loading && (
             <TouchableOpacity
               onPress={showImageOptions}
-              className="absolute top-2 right-2 bg-white/90 rounded-full p-2"
+              className="absolute top-4 right-4 rounded-full p-3 shadow-md"
+              style={{ backgroundColor: COLORS.white, elevation: 4 }}
             >
-              <Ionicons name="camera" size={20} color={COLORS.primary} />
+              <Ionicons name="camera" size={24} color={COLORS.primary} />
             </TouchableOpacity>
           )}
         </View>
       ) : (
         <TouchableOpacity
           onPress={showImageOptions}
-          className="w-full h-64 border-2 border-dashed border-gray-300 rounded-lg justify-center items-center bg-gray-50"
+          className="w-full h-72 rounded-3xl justify-center items-center shadow-md"
+          style={{
+            borderWidth: 2,
+            borderStyle: "dashed",
+            borderColor: COLORS.primary,
+            backgroundColor: COLORS.lightCream,
+            elevation: 2,
+          }}
           disabled={loading}
         >
-          <Ionicons
-            name="camera-outline"
-            size={48}
-            color={COLORS.textSecondary}
-          />
-          <Text className="text-lg font-medium text-gray-600 mt-4">
-            Capture or Upload Image
-          </Text>
-          <Text className="text-sm text-gray-500 mt-1 text-center px-4">
-            Take a clear photo of a mango leaf for disease detection
-          </Text>
+          <View className="items-center px-6">
+            <View
+              className="w-20 h-20 rounded-full items-center justify-center mb-4"
+              style={{ backgroundColor: `${COLORS.primary}20` }}
+            >
+              <Ionicons name="camera" size={40} color={COLORS.primary} />
+            </View>
+            <Text
+              className="text-xl font-bold mb-2"
+              style={{ color: COLORS.textPrimary }}
+            >
+              Capture or Upload Image
+            </Text>
+            <Text
+              className="text-sm text-center leading-5"
+              style={{ color: COLORS.textSecondary }}
+            >
+              Take a clear photo of a mango leaf for disease detection
+            </Text>
+          </View>
         </TouchableOpacity>
       )}
 
       {selectedImage && !loading && (
         <TouchableOpacity
           onPress={() => onImageSelected(selectedImage)}
-          className="mt-4 bg-primary rounded-lg py-4 px-6 flex-row items-center justify-center"
-          style={{ backgroundColor: COLORS.primary }}
+          className="mt-5 rounded-full py-4 px-6 flex-row items-center justify-center shadow-lg"
+          style={{
+            backgroundColor: COLORS.secondary,
+            elevation: 4,
+          }}
         >
-          <Ionicons name="leaf" size={20} color={COLORS.white} />
-          <Text className="text-white font-semibold ml-2 text-lg">
+          <Ionicons name="leaf" size={22} color={COLORS.textWhite} />
+          <Text className="text-white font-bold ml-3 text-lg">
             Detect Disease
           </Text>
         </TouchableOpacity>

@@ -34,23 +34,37 @@ export default function PredictionCard({ prediction }: PredictionCardProps) {
   const confidenceColor = getConfidenceColor(prediction.confidence);
 
   return (
-    <View className="bg-white rounded-lg p-6 shadow-md border border-gray-100">
-      {/* Disease Name and Confidence */}
-      <View className="flex-row items-center justify-between mb-4">
-        <Text className="text-xl font-bold text-gray-900 flex-1">
-          {prediction.disease}
-        </Text>
+    <View
+      className="bg-white rounded-3xl p-6 shadow-lg"
+      style={{
+        elevation: 6,
+        shadowColor: COLORS.shadow,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+      }}
+    >
+      {/* Disease Name and Confidence Badge */}
+      <View className="flex-row items-center justify-between mb-5">
+        <View className="flex-1 mr-3">
+          <Text
+            className="text-2xl font-bold"
+            style={{ color: COLORS.textPrimary }}
+          >
+            {prediction.disease}
+          </Text>
+        </View>
         <View
-          className="px-3 py-1 rounded-full flex-row items-center"
+          className="px-4 py-2 rounded-full flex-row items-center"
           style={{ backgroundColor: `${confidenceColor}20` }}
         >
           <Ionicons
             name={getConfidenceIcon(prediction.confidence)}
-            size={16}
+            size={18}
             color={confidenceColor}
           />
           <Text
-            className="ml-1 font-semibold text-sm"
+            className="ml-2 font-bold text-base"
             style={{ color: confidenceColor }}
           >
             {Math.round(prediction.confidence)}%
@@ -58,14 +72,17 @@ export default function PredictionCard({ prediction }: PredictionCardProps) {
         </View>
       </View>
 
-      {/* Confidence Level */}
-      <View className="mb-4">
-        <Text className="text-gray-600 text-sm mb-2">
+      {/* Confidence Level with Progress Bar */}
+      <View className="mb-5">
+        <Text
+          className="text-sm font-medium mb-2"
+          style={{ color: COLORS.textSecondary }}
+        >
           {getConfidenceText(prediction.confidence)}
         </Text>
-        <View className="bg-gray-200 rounded-full h-2">
+        <View className="bg-gray-100 rounded-full h-3 overflow-hidden">
           <View
-            className="h-2 rounded-full"
+            className="h-3 rounded-full"
             style={{
               backgroundColor: confidenceColor,
               width: `${prediction.confidence}%`,
@@ -76,14 +93,28 @@ export default function PredictionCard({ prediction }: PredictionCardProps) {
 
       {/* Treatment Information */}
       {prediction.treatment && (
-        <View className="bg-blue-50 rounded-lg p-4 mb-4">
-          <View className="flex-row items-center mb-2">
-            <Ionicons name="medical" size={16} color={COLORS.accent} />
-            <Text className="ml-2 font-semibold text-gray-800">
+        <View
+          className="rounded-2xl p-4 mb-4"
+          style={{ backgroundColor: COLORS.lightCream }}
+        >
+          <View className="flex-row items-center mb-3">
+            <View
+              className="w-8 h-8 rounded-full items-center justify-center"
+              style={{ backgroundColor: COLORS.secondary }}
+            >
+              <Ionicons name="medical" size={18} color={COLORS.textWhite} />
+            </View>
+            <Text
+              className="ml-3 font-bold text-base"
+              style={{ color: COLORS.textPrimary }}
+            >
               Recommended Treatment
             </Text>
           </View>
-          <Text className="text-gray-700 text-sm leading-5">
+          <Text
+            className="text-sm leading-6"
+            style={{ color: COLORS.textSecondary }}
+          >
             {prediction.treatment}
           </Text>
         </View>
@@ -91,21 +122,42 @@ export default function PredictionCard({ prediction }: PredictionCardProps) {
 
       {/* Severity Level */}
       {prediction.severity && (
-        <View className="flex-row items-center">
-          <Ionicons
-            name="alert"
-            size={16}
-            color={
-              prediction.severity === "high"
-                ? COLORS.severityHigh
-                : prediction.severity === "medium"
-                ? COLORS.severityMedium
-                : COLORS.severityLow
-            }
-          />
-          <Text className="ml-2 text-gray-600 text-sm">
+        <View
+          className="flex-row items-center pt-4 border-t"
+          style={{ borderTopColor: COLORS.border }}
+        >
+          <View
+            className="w-8 h-8 rounded-full items-center justify-center"
+            style={{
+              backgroundColor:
+                prediction.severity === "high"
+                  ? `${COLORS.severityHigh}20`
+                  : prediction.severity === "medium"
+                    ? `${COLORS.severityMedium}20`
+                    : `${COLORS.severityLow}20`,
+            }}
+          >
+            <Ionicons
+              name="alert"
+              size={18}
+              color={
+                prediction.severity === "high"
+                  ? COLORS.severityHigh
+                  : prediction.severity === "medium"
+                    ? COLORS.severityMedium
+                    : COLORS.severityLow
+              }
+            />
+          </View>
+          <Text
+            className="ml-3 text-sm"
+            style={{ color: COLORS.textSecondary }}
+          >
             Severity:{" "}
-            <Text className="font-semibold capitalize">
+            <Text
+              className="font-bold capitalize"
+              style={{ color: COLORS.textPrimary }}
+            >
               {prediction.severity}
             </Text>
           </Text>

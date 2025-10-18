@@ -18,13 +18,12 @@ export const getWeather = async (
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${CONFIG.OPENWEATHER_API_KEY}&units=metric`
     );
-
+    
     if (!response.ok) {
       throw new Error(`Weather API error: ${response.status}`);
     }
 
     const data = await response.json();
-
     return {
       temperature: Math.round(data.main.temp),
       humidity: data.main.humidity,
