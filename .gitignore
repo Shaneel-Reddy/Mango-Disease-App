@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+mobile-app/node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# ML Models
+backend/models/*.h5
+backend/models/*.pkl
+backend/models/*.pb
+backend/models/*.pth
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Build artifacts
+*.apk
+*.ipa
+*.app
+build/
+android/app/build/
+ios/Pods/
+ios/build/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.pytest_cache/
+
+# Database
+*.db
+*.sqlite
+
+# Temp files
+tmp/
+temp/
