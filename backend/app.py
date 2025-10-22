@@ -17,7 +17,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+# Configure CORS to allow requests from mobile apps and local development
+CORS(app, resources={
+    r"/api/*": {"origins": "*"},
+    r"/*": {"origins": "*"}
+}, allow_headers=["Content-Type", "Authorization"], methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
 # Configuration
 SUPABASE_URL = os.getenv('SUPABASE_URL')
@@ -28,37 +32,177 @@ MODEL_PATH = os.getenv('MODEL_PATH', 'models/DenseNet-121.pth')
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Disease classes (update based on your model)
-DISEASE_CLASSES = [
-    'Healthy',
-    'Cutting Weevil',
-    'Gall Midge',
-    'Sooty Mould'
-]
+# Disease classes (matching hybrid model)
+DISEASE_CLASSES = {
+    0: 'Sooty Mould',
+    1: 'Cutting Weevil', 
+    2: 'Gall Midge',
+    3: 'Healthy'
+}
+
+# Map index to class name for easy access
+IDX_TO_CLASS = DISEASE_CLASSES
+CLASS_NAMES = list(DISEASE_CLASSES.values())
 
 # Set device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using device: {device}")
 
+# Hybrid Model Architecture
+class HybridDenseNetMobileNetV3(nn.Module):
+    def __init__(self, num_classes=4):
+        super(HybridDenseNetMobileNetV3, self).__init__()
+        
+        # DenseNet-121 Branch
+        try:
+            self.densenet = models.densenet121(weights=models.DenseNet121_Weights.IMAGENET1K_V1)
+            print("Successfully loaded pretrained DenseNet-121")
+        except AttributeError:
+            self.densenet = models.densenet121(pretrained=True)
+            print("Loaded DenseNet-121 with legacy pretrained weights")
+        
+        # Freeze early DenseNet layers
+        for i, param in enumerate(self.densenet.features.parameters()):
+            if i < len(list(self.densenet.features.parameters())) - 20:
+                param.requires_grad = False
+        
+        # Extract DenseNet features (remove classifier)
+        densenet_feature_dim = self.densenet.classifier.in_features
+        self.densenet = nn.Sequential(*list(self.densenet.children())[:-1])
+        
+        # MobileNetV3-Small Branch
+        try:
+            self.mobilenet = models.mobilenet_v3_small(weights=models.MobileNet_V3_Small_Weights.IMAGENET1K_V1)
+            print("Successfully loaded pretrained MobileNetV3-Small")
+        except AttributeError:
+            self.mobilenet = models.mobilenet_v3_small(pretrained=True)
+            print("Loaded MobileNetV3-Small with legacy pretrained weights")
+        
+        # Freeze early MobileNet layers
+        for i, param in enumerate(self.mobilenet.features.parameters()):
+            if i < len(list(self.mobilenet.features.parameters())) - 10:
+                param.requires_grad = False
+        
+        # Extract MobileNet features (remove classifier)
+        mobilenet_feature_dim = 576  # MobileNetV3-Small feature dimension
+        self.mobilenet.classifier = nn.Identity()
+        
+        # Feature projection layers to common dimension
+        projection_dim = 256
+        
+        self.densenet_projection = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Flatten(),
+            nn.Linear(densenet_feature_dim, projection_dim),
+            nn.BatchNorm1d(projection_dim),
+            nn.ReLU(),
+            nn.Dropout(0.4)
+        )
+        
+        self.mobilenet_projection = nn.Sequential(
+            nn.Linear(mobilenet_feature_dim, projection_dim),
+            nn.BatchNorm1d(projection_dim),
+            nn.ReLU(),
+            nn.Dropout(0.4)
+        )
+        
+        # Attention mechanism for adaptive fusion
+        self.attention = nn.Sequential(
+            nn.Linear(projection_dim * 2, 128),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(128, 2),
+            nn.Softmax(dim=1)
+        )
+        
+        # Fusion classifier with regularization
+        self.fusion_classifier = nn.Sequential(
+            nn.Linear(projection_dim * 2, 256),
+            nn.BatchNorm1d(256),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(256, 128),
+            nn.BatchNorm1d(128),
+            nn.ReLU(),
+            nn.Dropout(0.4),
+            nn.Linear(128, num_classes)
+        )
+        
+    def forward(self, x):
+        # DenseNet branch - extract features
+        densenet_features = self.densenet(x)
+        densenet_features = self.densenet_projection(densenet_features)
+        
+        # MobileNet branch - extract features
+        mobilenet_features = self.mobilenet(x)
+        mobilenet_features = self.mobilenet_projection(mobilenet_features)
+        
+        # Concatenate features for attention
+        concatenated_features = torch.cat([densenet_features, mobilenet_features], dim=1)
+        
+        # Calculate attention weights
+        attention_weights = self.attention(concatenated_features)
+        
+        # Apply attention-weighted fusion
+        weighted_densenet = densenet_features * attention_weights[:, 0:1]
+        weighted_mobilenet = mobilenet_features * attention_weights[:, 1:2]
+        
+        # Final fused features
+        fused_features = torch.cat([weighted_densenet, weighted_mobilenet], dim=1)
+        
+        # Classification
+        output = self.fusion_classifier(fused_features)
+        
+        return output
+
 # Load PyTorch model
 model = None
+HYBRID_MODEL_PATH = os.getenv('HYBRID_MODEL_PATH', 'models/Hybrid_Model.pth')
+
 if os.path.exists(MODEL_PATH):
+    print(f"Found model at {MODEL_PATH}, checking if it's the hybrid model...")
+    # Try to load as hybrid model first
     try:
-        # Initialize DenseNet-121 architecture
-        model = models.densenet121(pretrained=False)
-        num_features = model.classifier.in_features
-        model.classifier = nn.Linear(num_features, len(DISEASE_CLASSES))
-        
-        # Load weights
+        model = HybridDenseNetMobileNetV3(num_classes=4)
         model.load_state_dict(torch.load(MODEL_PATH, map_location=device))
         model = model.to(device)
         model.eval()
-        print(f"Model loaded successfully from {MODEL_PATH}")
+        print(f"✅ Hybrid model loaded successfully from {MODEL_PATH}")
     except Exception as e:
-        print(f"Error loading model: {str(e)}")
+        print(f"Failed to load as hybrid model: {str(e)}")
         model = None
-else:
-    print(f"Warning: Model not found at {MODEL_PATH}")
+
+# Try alternative hybrid model path if primary failed
+if model is None and os.path.exists(HYBRID_MODEL_PATH):
+    try:
+        model = HybridDenseNetMobileNetV3(num_classes=4)
+        model.load_state_dict(torch.load(HYBRID_MODEL_PATH, map_location=device))
+        model = model.to(device)
+        model.eval()
+        print(f"✅ Hybrid model loaded successfully from {HYBRID_MODEL_PATH}")
+    except Exception as e:
+        print(f"Error loading hybrid model from {HYBRID_MODEL_PATH}: {str(e)}")
+        model = None
+
+# Fallback to simple DenseNet if hybrid model fails
+if model is None and os.path.exists(MODEL_PATH):
+    try:
+        print("Attempting to load as simple DenseNet-121...")
+        model = models.densenet121(pretrained=False)
+        num_features = model.classifier.in_features
+        model.classifier = nn.Linear(num_features, 4)
+        model.load_state_dict(torch.load(MODEL_PATH, map_location=device))
+        model = model.to(device)
+        model.eval()
+        print(f"✅ DenseNet-121 model loaded successfully from {MODEL_PATH}")
+    except Exception as e:
+        print(f"Error loading DenseNet model: {str(e)}")
+        model = None
+
+if model is None:
+    print(f"⚠️ Warning: No model loaded. Check model paths:")
+    print(f"  - {MODEL_PATH}")
+    print(f"  - {HYBRID_MODEL_PATH}")
 
 # Define image transformations for PyTorch
 transform = transforms.Compose([
@@ -180,31 +324,64 @@ def home():
         'version': '1.0.0'
     })
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
     """Main prediction endpoint"""
+    # Handle preflight requests
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'ok'})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
+        return response
+        
     try:
+        print(f"Received prediction request from {request.remote_addr}")
+        
         # Validate request
         if 'file' not in request.files:
+            print("Error: No file in request")
             return jsonify({'error': 'No image file provided'}), 400
         
         file = request.files['file']
         if file.filename == '':
+            print("Error: Empty filename")
             return jsonify({'error': 'Empty filename'}), 400
         
+        print(f"Processing image: {file.filename}")
+        
         # Get metadata
-        latitude = float(request.form.get('latitude', 0))
-        longitude = float(request.form.get('longitude', 0))
+        try:
+            latitude = float(request.form.get('latitude', 0))
+            longitude = float(request.form.get('longitude', 0))
+            print(f"Location: {latitude}, {longitude}")
+        except (ValueError, TypeError) as e:
+            print(f"Error parsing coordinates: {e}")
+            latitude, longitude = 0, 0
         
         # Read image
-        image_bytes = file.read()
+        try:
+            image_bytes = file.read()
+            if len(image_bytes) == 0:
+                print("Error: Empty image file")
+                return jsonify({'error': 'Empty image file'}), 400
+            print(f"Image size: {len(image_bytes)} bytes")
+        except Exception as e:
+            print(f"Error reading image: {e}")
+            return jsonify({'error': 'Failed to read image file'}), 400
         
         # Preprocess and predict
         if model is None:
+            print("Error: Model not loaded")
             return jsonify({'error': 'Model not loaded'}), 500
         
-        processed_image = preprocess_image(image_bytes)
-        processed_image = processed_image.to(device)
+        try:
+            processed_image = preprocess_image(image_bytes)
+            processed_image = processed_image.to(device)
+            print("Image preprocessed successfully")
+        except Exception as e:
+            print(f"Error preprocessing image: {e}")
+            return jsonify({'error': 'Failed to process image'}), 400
         
         # Make prediction
         with torch.no_grad():
@@ -215,7 +392,7 @@ def predict():
         # Get prediction results
         predicted_class_idx = np.argmax(predictions)
         confidence = float(predictions[predicted_class_idx]) * 100
-        disease = DISEASE_CLASSES[predicted_class_idx]
+        disease = IDX_TO_CLASS[predicted_class_idx]
         
         # Get weather data
         weather = get_weather_data(latitude, longitude)
@@ -264,8 +441,8 @@ def predict():
             'season': season,
             'alert': alert_message if alert_message else None,
             'all_predictions': {
-                DISEASE_CLASSES[i]: round(float(predictions[i]) * 100, 2) 
-                for i in range(len(DISEASE_CLASSES))
+                IDX_TO_CLASS[i]: round(float(predictions[i]) * 100, 2) 
+                for i in range(len(IDX_TO_CLASS))
             },
             'timestamp': timestamp
         }
@@ -344,5 +521,5 @@ def get_stats():
         return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))
+    port = int(os.getenv('PORT', 5001))
     app.run(host='0.0.0.0', port=port, debug=True)

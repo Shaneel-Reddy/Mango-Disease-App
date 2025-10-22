@@ -66,11 +66,11 @@ export default function Index() {
       setPrediction(result);
 
       // Update weather if it's included in the prediction response
-      if (result.weather) {
+      if (result.temperature !== undefined && result.humidity !== undefined) {
         setWeather({
           ...weather!,
-          temperature: result.weather.temperature,
-          humidity: result.weather.humidity,
+          temperature: result.temperature,
+          humidity: result.humidity,
         });
       }
     } catch (error) {
