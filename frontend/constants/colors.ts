@@ -1,15 +1,16 @@
 export const COLORS = {
   // Mango Theme Primary Colors
-  primary: "#FFC107", // Mango Yellow
-  primaryDark: "#FFB300", // Darker Mango
+  primary: "#FFB300", // Rich Mango Yellow
+  primaryDark: "#FF8F00", // Darker Mango
   secondary: "#2E7D32", // Dark Green (leaves)
-  accent: "#FFB74D", // Orange accent
-  background: "#FFF8E1", // Light Cream
-
+  accent: "#FFA726", // Warm Orange accent
+  background: "#FFFBF0", // Soft Cream
+  card: "#FFFFFF",
   // Status colors for confidence levels
   high: "#2E7D32", // Green for high confidence (>85%)
   medium: "#FFC107", // Yellow for medium confidence (60-85%)
   low: "#FF6F00", // Orange-Red for low confidence (<60%)
+  divider: "#F3F3F3",
 
   // Severity colors for alerts
   severityLow: "#4CAF50", // Green

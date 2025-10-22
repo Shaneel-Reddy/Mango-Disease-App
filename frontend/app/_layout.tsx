@@ -32,7 +32,7 @@ export default function RootLayout() {
           name="index"
           options={{
             title: "Home",
-            headerTitle: "Mango Disease Detection",
+            headerTitle: "Mango Care",
             tabBarLabel: "Detect",
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="leaf" size={size} color={color} />

@@ -14,7 +14,6 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import ImageUploader from "@/components/ImageUploader";
 import PredictionCard from "@/components/PredictionCard";
-import WeatherCard from "@/components/WeatherCard";
 import LoadingIndicator from "@/components/LoadingIndicator";
 
 import {
@@ -25,6 +24,7 @@ import {
 import { getWeather, type WeatherData } from "@/services/weather";
 import { predictDisease, type PredictionResponse } from "@/services/api";
 import { COLORS } from "@/constants/colors";
+import { Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
@@ -39,6 +39,14 @@ export default function Index() {
   const scrollY = useRef(new Animated.Value(0)).current;
   const fadeInAnim = useRef(new Animated.Value(0)).current;
   const slideInAnim = useRef(new Animated.Value(50)).current;
+
+  // Staggered animations for weather metric cards
+  const weatherAnim1 = useRef(new Animated.Value(0)).current;
+  const weatherAnim2 = useRef(new Animated.Value(0)).current;
+  const weatherAnim3 = useRef(new Animated.Value(0)).current;
+
+  // Subtle bounce for uploader container
+  const uploaderAnim = useRef(new Animated.Value(0)).current;
 
   const loadLocationAndWeather = async () => {
     try {
@@ -123,8 +131,36 @@ export default function Index() {
         friction: 8,
         useNativeDriver: true,
       }),
+      Animated.spring(uploaderAnim, {
+        toValue: 1,
+        tension: 60,
+        friction: 7,
+        useNativeDriver: true,
+      }),
     ]).start();
   }, []);
+
+  // Trigger stagger when weather becomes available
+  useEffect(() => {
+    if (!weather) return;
+    Animated.stagger(120, [
+      Animated.timing(weatherAnim1, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(weatherAnim2, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(weatherAnim3, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [weather]);
 
   return (
     <SafeAreaView
@@ -133,24 +169,31 @@ export default function Index() {
     >
       <StatusBar style="dark" />
 
-      {/* Animated Header Background */}
+      {/* Animated Header Background - Mango Gradient */}
       <Animated.View
         style={{
           position: "absolute",
           top: 0,
           left: 0,
           right: 0,
-          height: 280,
+          height: 400,
           opacity: scrollY.interpolate({
-            inputRange: [0, 150],
+            inputRange: [0, 250],
             outputRange: [1, 0],
             extrapolate: "clamp",
           }),
           transform: [
             {
               translateY: scrollY.interpolate({
-                inputRange: [0, 150],
-                outputRange: [0, -50],
+                inputRange: [0, 250],
+                outputRange: [0, -80],
+                extrapolate: "clamp",
+              }),
+            },
+            {
+              scale: scrollY.interpolate({
+                inputRange: [0, 250],
+                outputRange: [1, 1.1],
                 extrapolate: "clamp",
               }),
             },
@@ -160,8 +203,9 @@ export default function Index() {
       >
         <LinearGradient
           colors={[
-            `${COLORS.primary}15`,
-            `${COLORS.secondary}10`,
+            `${COLORS.primary}18`,
+            `${COLORS.accent}12`,
+            `${COLORS.secondary}08`,
             "transparent",
           ]}
           style={{ flex: 1 }}
@@ -172,7 +216,7 @@ export default function Index() {
 
       <Animated.ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -193,418 +237,569 @@ export default function Index() {
           style={{
             opacity: fadeInAnim,
             transform: [{ translateY: slideInAnim }],
-            paddingHorizontal: 20,
+            marginTop: 16,
+            marginBottom: 28,
           }}
         >
-          <View className="mt-6 mb-8">
-            {/* App Icon & Title */}
-            <View className="flex-row items-center mb-4">
-              <View
-                className="rounded-2xl items-center justify-center shadow-lg"
+          {/* Tagline Card with Premium Design */}
+          <Animated.View
+            style={{
+              backgroundColor: COLORS.white,
+              borderRadius: 20,
+              padding: 20,
+              shadowColor: COLORS.primary,
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.12,
+              shadowRadius: 20,
+              elevation: 8,
+              borderWidth: 1,
+              borderColor: `${COLORS.primary}15`,
+              transform: [{ translateY: weatherAnim3 }], // Smooth animation continuity
+            }}
+          >
+            {/* Gradient Border Accent */}
+            <LinearGradient
+              colors={[
+                `${COLORS.primary}20`,
+                `${COLORS.accent}15`,
+                `${COLORS.secondary}10`,
+              ]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              className="absolute inset-0 rounded-3xl"
+              style={{ opacity: 0.6 }}
+            />
+
+            {/* Tagline Text */}
+            <View className="px-4">
+              <Text
+                className="text-center text-[15px] font-semibold leading-6 tracking-wide"
                 style={{
-                  backgroundColor: COLORS.white,
-                  width: 64,
-                  height: 64,
-                  shadowColor: COLORS.primary,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 8,
-                  elevation: 8,
+                  color: COLORS.textPrimary,
+                  lineHeight: 22,
+                  letterSpacing: 0.3,
                 }}
               >
-                <Text className="text-4xl">🥭</Text>
-              </View>
-              <View className="flex-1 ml-4">
+                Detect mango leaf diseases instantly with{" "}
                 <Text
-                  className="text-4xl font-extrabold tracking-tight"
-                  style={{ color: COLORS.textPrimary }}
+                  className="font-extrabold"
+                  style={{ color: COLORS.primary }}
                 >
-                  Mango Care
+                  AI-powered analysis
                 </Text>
-                <View className="flex-row items-center mt-1">
-                  <View
-                    className="w-1.5 h-1.5 rounded-full mr-2"
-                    style={{ backgroundColor: COLORS.secondary }}
-                  />
-                  <Text
-                    className="text-sm font-semibold tracking-wide"
-                    style={{ color: COLORS.secondary }}
-                  >
-                    AI-Powered Diagnostics
-                  </Text>
-                </View>
-              </View>
-            </View>
-
-            {/* Tagline */}
-            <View
-              className="rounded-2xl p-4 mt-2"
-              style={{
-                backgroundColor: `${COLORS.primary}08`,
-                borderLeftWidth: 3,
-                borderLeftColor: COLORS.primary,
-              }}
-            >
-              <Text
-                className="text-base leading-6 font-medium"
-                style={{ color: COLORS.textSecondary }}
-              >
-                Detect mango leaf diseases instantly with AI-powered analysis.
-                Get expert recommendations and real-time environmental insights.
+                . Get expert recommendations and real-time environmental
+                insights.
               </Text>
             </View>
+          </Animated.View>
+        </Animated.View>
+
+        {/* Weather Stats - 3 Cards Horizontal */}
+        {weather && (
+          <Animated.View
+            style={{
+              opacity: fadeInAnim,
+              transform: [{ translateY: slideInAnim }],
+              marginBottom: 28,
+            }}
+          >
+            {/* Section Header with Icon */}
+            {/* Section Header with Premium Design */}
+            <Animated.View
+              style={{
+                backgroundColor: COLORS.white,
+                borderRadius: 20,
+                padding: 20,
+                shadowColor: COLORS.primary,
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.12,
+                shadowRadius: 20,
+                elevation: 8,
+                borderWidth: 1,
+                borderColor: `${COLORS.primary}15`,
+                transform: [{ translateY: weatherAnim1 }], // First animation for section start
+                marginBottom: 24,
+              }}
+            >
+              <View className="flex-row items-center justify-center">
+                {/* Title */}
+                <Text
+                  className="text-2xl font-extrabold"
+                  style={{ color: COLORS.textPrimary }}
+                >
+                  Local Conditions
+                </Text>
+              </View>
+            </Animated.View>
+
+            <View
+              className="flex-row justify-between mt-6 mb-6"
+              style={{ gap: 12 }}
+            >
+              {/* Temperature Card */}
+              <Animated.View
+                style={{
+                  flex: 1,
+                  backgroundColor: COLORS.white,
+                  borderRadius: 16,
+                  padding: 20,
+                  alignItems: "center",
+                  shadowColor: COLORS.primary,
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 20,
+                  elevation: 8,
+                  borderWidth: 1,
+                  borderColor: `${COLORS.primary}15`,
+                  transform: [{ translateY: weatherAnim1 }],
+                }}
+              >
+                <Ionicons name="thermometer" size={24} color={COLORS.primary} />
+                <Text
+                  className="text-lg font-semibold mb-2 text-center"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  Temperature
+                </Text>
+                <Text
+                  className="text-2xl font-extrabold text-center"
+                  style={{ color: COLORS.primary }}
+                >
+                  {weather.temperature.toFixed(1)}°C
+                </Text>
+              </Animated.View>
+
+              {/* Humidity Card */}
+              <Animated.View
+                style={{
+                  flex: 1,
+                  backgroundColor: COLORS.white,
+                  borderRadius: 16,
+                  padding: 20,
+                  alignItems: "center",
+                  shadowColor: COLORS.secondary,
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 20,
+                  elevation: 8,
+                  borderWidth: 1,
+                  borderColor: `${COLORS.secondary}15`,
+                  transform: [{ translateY: weatherAnim2 }],
+                }}
+              >
+                <Ionicons name="water" size={24} color={COLORS.secondary} />
+
+                <Text
+                  className="text-lg font-semibold mb-2 text-center"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  Humidity
+                </Text>
+                <Text
+                  className="text-2xl font-extrabold text-center"
+                  style={{ color: COLORS.secondary }}
+                >
+                  {weather.humidity.toFixed(1)}%
+                </Text>
+              </Animated.View>
+
+              {/* Leaf Wetness Card */}
+              <Animated.View
+                style={{
+                  flex: 1,
+                  backgroundColor: COLORS.white,
+                  borderRadius: 16,
+                  padding: 20,
+                  alignItems: "center",
+                  shadowColor: "#64B5F6",
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 20,
+                  elevation: 8,
+                  borderWidth: 1,
+                  borderColor: "#64B5F630",
+                  transform: [{ translateY: weatherAnim3 }],
+                }}
+              >
+                <Ionicons name="leaf" size={24} color="#64B5F6" />
+
+                <Text
+                  className="text-lg font-semibold mb-2 text-center"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  Leaf Wetness
+                </Text>
+                <Text
+                  className="text-2xl font-extrabold text-center"
+                  style={{ color: "#64B5F6" }}
+                >
+                  Dry
+                </Text>
+              </Animated.View>
+            </View>
+
+            {/* Location Info Card */}
+            {location && (
+              <Animated.View
+                style={{
+                  backgroundColor: COLORS.white,
+                  borderRadius: 20,
+                  padding: 20,
+                  shadowColor: COLORS.primary,
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 20,
+                  elevation: 8,
+                  borderWidth: 1,
+                  borderColor: `${COLORS.primary}15`,
+                  transform: [{ translateY: weatherAnim3 }], // Reuse last animation for smooth flow
+                  marginTop: 20,
+                }}
+              >
+                {/* Location Header */}
+                <View className="flex-row items-center mb-6 ">
+                  <LinearGradient
+                    colors={[`${COLORS.primary}20`, `${COLORS.primary}10`]}
+                    className="rounded-full p-3 mr-4"
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  ></LinearGradient>
+                  <View className="flex-1">
+                    <Text
+                      className="text-xl font-extrabold"
+                      style={{ color: COLORS.textPrimary }}
+                    >
+                      <Ionicons
+                        name="location-sharp"
+                        size={14}
+                        color={COLORS.primary}
+                      />{" "}
+                      {formatLocation(location)}
+                    </Text>
+                    <Text
+                      className="text-sm font-semibold mt-1"
+                      style={{ color: COLORS.textSecondary }}
+                    >
+                      Current Position
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Divider */}
+                <View
+                  className="h-0.5 mb-6"
+                  style={{ backgroundColor: `${COLORS.primary}15` }}
+                />
+
+                {/* Coordinates - 2 Cards in Row */}
+                <View className="flex-row" style={{ gap: 12 }}>
+                  {/* Latitude Card */}
+                  <Animated.View
+                    style={{
+                      flex: 1,
+                      backgroundColor: `${COLORS.white}95`,
+                      borderRadius: 16,
+                      padding: 26,
+                      alignItems: "center",
+                      borderWidth: 1,
+                      borderColor: `${COLORS.primary}20`,
+                      minHeight: 72,
+                      justifyContent: "center",
+                      shadowColor: COLORS.primary,
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.08,
+                      shadowRadius: 12,
+                      elevation: 4,
+                      transform: [{ translateY: weatherAnim1 }],
+                    }}
+                  >
+                    <Ionicons
+                      name="navigate"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                    <Text
+                      className="text-xs font-semibold mb-2 text-center"
+                      style={{ color: COLORS.textSecondary }}
+                    >
+                      Latitude
+                    </Text>
+                    <Text
+                      className="text-lg font-extrabold text-center"
+                      style={{ color: COLORS.primary }}
+                    >
+                      {location.latitude.toFixed(3)}°
+                    </Text>
+                  </Animated.View>
+
+                  {/* Longitude Card */}
+                  <Animated.View
+                    style={{
+                      flex: 1,
+                      backgroundColor: `${COLORS.white}95`,
+                      borderRadius: 16,
+                      padding: 26,
+                      alignItems: "center",
+                      borderWidth: 1,
+                      borderColor: `${COLORS.primary}20`,
+                      minHeight: 72,
+                      justifyContent: "center",
+                      shadowColor: COLORS.primary,
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.08,
+                      shadowRadius: 12,
+                      elevation: 4,
+                      transform: [{ translateY: weatherAnim2 }],
+                    }}
+                  >
+                    <Ionicons
+                      name="navigate-outline"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                    <Text
+                      className="text-xs font-semibold mb-2 text-center"
+                      style={{ color: COLORS.textSecondary }}
+                    >
+                      Longitude
+                    </Text>
+                    <Text
+                      className="text-lg font-extrabold text-center"
+                      style={{ color: COLORS.primary }}
+                    >
+                      {location.longitude.toFixed(3)}°
+                    </Text>
+                  </Animated.View>
+                </View>
+              </Animated.View>
+            )}
+          </Animated.View>
+        )}
+
+        {/* Image Uploader Section - Enhanced with Animation */}
+        <Animated.View
+          className="mb-6"
+          style={{
+            opacity: fadeInAnim,
+            transform: [
+              {
+                scale: uploaderAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.96, 1],
+                }),
+              },
+            ],
+          }}
+        >
+          <View className="flex-row items-center mb-4">
+            <LinearGradient
+              colors={[COLORS.primary, COLORS.accent]}
+              className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <Ionicons name="camera" size={24} color={COLORS.white} />
+            </LinearGradient>
+            <Text
+              className="text-2xl font-extrabold"
+              style={{ color: COLORS.textPrimary }}
+            >
+              Analyze Leaf
+            </Text>
+          </View>
+
+          {/* Dashed container with helper text */}
+          <View
+            className="rounded-2xl p-4"
+            style={{
+              borderWidth: 2,
+              borderStyle: "dashed",
+              borderColor: `${COLORS.primary}50`,
+              backgroundColor: `${COLORS.lightCream}60`,
+            }}
+          >
+            <View className="flex-row items-center mb-3">
+              <Ionicons name="image" size={18} color={COLORS.accent} />
+              <Text
+                className="ml-2 text-sm font-semibold"
+                style={{ color: COLORS.textSecondary, opacity: 0.9 }}
+              >
+                Tap to capture or upload leaf photo
+              </Text>
+            </View>
+            <ImageUploader
+              onImageSelected={handleImageSelected}
+              loading={loading}
+            />
           </View>
         </Animated.View>
 
-        {/* Section Divider */}
-        <View className="mb-6 px-20">
-          <View
-            style={{
-              height: 1,
-              backgroundColor: `${COLORS.primary}15`,
-            }}
-          />
-        </View>
+        {/* Loading State with Shimmer Effect */}
+        {loading && (
+          <View className="mb-6">
+            <LoadingIndicator />
+          </View>
+        )}
 
-        {/* Weather Card with Enhanced Styling */}
-        {weather && (
+        {/* Prediction Results Section - Enhanced with Slide-in Animation */}
+        {prediction && !loading && (
           <Animated.View
-            className="mb-6 px-5"
+            className="mb-6"
+            style={{
+              opacity: fadeInAnim,
+              transform: [
+                {
+                  translateX: fadeInAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [50, 0],
+                  }),
+                },
+              ],
+            }}
+          >
+            {/* Gradient Header */}
+            <LinearGradient
+              colors={[COLORS.secondary, `${COLORS.secondary}CC`]}
+              className="rounded-2xl p-4 mb-4 flex-row items-center"
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{
+                shadowColor: COLORS.secondary,
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+                elevation: 6,
+              }}
+            >
+              <View
+                className="w-10 h-10 rounded-xl items-center justify-center mr-3"
+                style={{ backgroundColor: `${COLORS.white}30` }}
+              >
+                <Ionicons name="analytics" size={24} color={COLORS.white} />
+              </View>
+              <Text className="text-2xl font-extrabold text-white flex-1">
+                Analysis Complete
+              </Text>
+              <Ionicons
+                name="checkmark-circle"
+                size={28}
+                color={COLORS.white}
+              />
+            </LinearGradient>
+            <PredictionCard prediction={prediction} />
+          </Animated.View>
+        )}
+
+        {/* Photography Tips Section - Gradient card with numbered bullets */}
+        {!loading && !prediction && (
+          <Animated.View
+            className="mb-6"
             style={{
               opacity: fadeInAnim,
               transform: [{ translateY: slideInAnim }],
             }}
           >
+            {/* Section Header */}
             <View className="flex-row items-center mb-3">
+              <Text
+                className="text-xl font-extrabold"
+                style={{ color: COLORS.textPrimary }}
+              >
+                Photography Tips
+              </Text>
+            </View>
+
+            {/* Tips Card */}
+            <LinearGradient
+              colors={[`${COLORS.primary}10`, `${COLORS.accent}0D`]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              className="rounded-2xl"
+            >
               <View
-                className="w-8 h-8 rounded-lg items-center justify-center mr-2"
-                style={{ backgroundColor: `${COLORS.accent}20` }}
-              >
-                <Text className="text-xl">☀️</Text>
-              </View>
-              <Text
-                className="text-lg font-bold tracking-tight"
-                style={{ color: COLORS.textPrimary }}
-              >
-                Current Conditions
-              </Text>
-            </View>
-            <WeatherCard
-              weather={weather}
-              location={location ? formatLocation(location) : undefined}
-            />
-          </Animated.View>
-        )}
-
-        {/* Image Uploader Section */}
-        <View className="px-5 mb-6">
-          <View className="flex-row items-center mb-3">
-            <View
-              className="w-8 h-8 rounded-lg items-center justify-center mr-2"
-              style={{ backgroundColor: `${COLORS.primary}20` }}
-            >
-              <Text className="text-xl">📸</Text>
-            </View>
-            <Text
-              className="text-lg font-bold tracking-tight"
-              style={{ color: COLORS.textPrimary }}
-            >
-              Upload or Capture
-            </Text>
-          </View>
-          <ImageUploader
-            onImageSelected={handleImageSelected}
-            loading={loading}
-          />
-        </View>
-
-        {/* Loading State with Shimmer Effect */}
-        {loading && (
-          <View className="px-5 py-12">
-            <View className="items-center">
-              <LoadingIndicator />
-              <Text
-                className="text-center mt-6 text-lg font-bold"
-                style={{ color: COLORS.textPrimary }}
-              >
-                Analyzing Leaf Sample
-              </Text>
-              <Text
-                className="text-center mt-2 text-sm font-medium"
-                style={{ color: COLORS.textSecondary }}
-              >
-                Our AI is examining the image...
-              </Text>
-              <View className="flex-row items-center mt-4">
-                <View
-                  className="w-2 h-2 rounded-full mx-1"
-                  style={{ backgroundColor: COLORS.primary }}
-                />
-                <View
-                  className="w-2 h-2 rounded-full mx-1"
-                  style={{ backgroundColor: COLORS.secondary }}
-                />
-                <View
-                  className="w-2 h-2 rounded-full mx-1"
-                  style={{ backgroundColor: COLORS.accent }}
-                />
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* Prediction Results Section */}
-        {prediction && !loading && (
-          <View className="px-5 mb-6">
-            {/* Section Header with Badge */}
-            <View className="flex-row items-center justify-between mb-4">
-              <View className="flex-row items-center flex-1">
-                <View
-                  className="w-10 h-10 rounded-xl items-center justify-center mr-3 shadow-sm"
-                  style={{
-                    backgroundColor: COLORS.white,
-                    shadowColor: COLORS.secondary,
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 4,
-                    elevation: 3,
-                  }}
-                >
-                  <Text className="text-2xl">🔬</Text>
-                </View>
-                <View className="flex-1">
-                  <Text
-                    className="text-xl font-extrabold"
-                    style={{ color: COLORS.textPrimary }}
-                  >
-                    Diagnosis Results
-                  </Text>
-                  <Text
-                    className="text-xs font-medium mt-0.5"
-                    style={{ color: COLORS.textLight }}
-                  >
-                    AI-powered analysis complete
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <PredictionCard prediction={prediction} />
-          </View>
-        )}
-
-        {/* Photography Tips Section - Enhanced Design */}
-        {!loading && !prediction && (
-          <View className="px-5 mb-6">
-            <View
-              className="rounded-3xl overflow-hidden shadow-lg"
-              style={{
-                backgroundColor: COLORS.white,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.1,
-                shadowRadius: 12,
-                elevation: 6,
-              }}
-            >
-              {/* Card Header with Gradient */}
-              <LinearGradient
-                colors={[`${COLORS.primary}12`, "transparent"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+                className="rounded-2xl p-5"
                 style={{
-                  paddingTop: 20,
-                  paddingHorizontal: 20,
-                  paddingBottom: 16,
+                  backgroundColor: COLORS.card,
+                  borderWidth: 1,
+                  borderColor: "#EDEDED",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.08,
+                  shadowRadius: 6,
+                  elevation: 3,
                 }}
               >
-                <View className="flex-row items-center">
-                  <View
-                    className="w-12 h-12 rounded-2xl items-center justify-center mr-3 shadow-sm"
-                    style={{
-                      backgroundColor: COLORS.white,
-                      shadowColor: COLORS.primary,
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.15,
-                      shadowRadius: 4,
-                      elevation: 3,
-                    }}
-                  >
-                    <Text className="text-2xl">📷</Text>
-                  </View>
-                  <View className="flex-1">
-                    <Text
-                      className="text-xl font-extrabold"
-                      style={{ color: COLORS.textPrimary }}
-                    >
-                      Photography Guide
-                    </Text>
-                    <Text
-                      className="text-xs font-medium mt-0.5"
-                      style={{ color: COLORS.textLight }}
-                    >
-                      Tips for best results
-                    </Text>
-                  </View>
-                </View>
-              </LinearGradient>
-
-              {/* Tips List */}
-              <View className="px-5 pb-6">
                 {[
-                  {
-                    icon: "💡",
-                    text: "Use natural daylight for optimal clarity and color accuracy",
-                  },
-                  {
-                    icon: "🎯",
-                    text: "Fill the entire frame with the leaf for precise detection",
-                  },
-                  {
-                    icon: "📐",
-                    text: "Hold steady and ensure the leaf is in sharp focus",
-                  },
-                  {
-                    icon: "🔍",
-                    text: "Capture any visible spots, discoloration, or damage clearly",
-                  },
-                ].map((tip, index) => (
-                  <View
-                    key={index}
-                    className="flex-row items-start mt-4"
-                    style={{
-                      paddingLeft: 12,
-                      paddingRight: 12,
-                      paddingVertical: 12,
-                      backgroundColor: `${COLORS.secondary}05`,
-                      borderRadius: 12,
-                      borderLeftWidth: 3,
-                      borderLeftColor:
-                        index % 2 === 0 ? COLORS.primary : COLORS.secondary,
-                    }}
-                  >
-                    <Text className="text-xl mr-3">{tip.icon}</Text>
-                    <Text
-                      className="flex-1 text-sm leading-6 font-medium"
-                      style={{ color: COLORS.textSecondary }}
-                    >
-                      {tip.text}
-                    </Text>
+                  "Use natural, even lighting. Avoid harsh shadows.",
+                  "Ensure the leaf is in sharp focus against a plain background.",
+                  "Capture a clear, high-resolution image of the affected area.",
+                ].map((tip, index, arr) => (
+                  <View key={index}>
+                    <View className="flex-row items-start mb-4">
+                      {/* Numbered badge */}
+
+                      <Text className="text-black font-extrabold text-sm">
+                        {index + 1}. {tip}
+                      </Text>
+                      {/* Text */}
+                      <Text
+                        className="text-base leading-7 flex-1"
+                        style={{
+                          color: COLORS.textSecondary,
+                          fontWeight: "600",
+                          letterSpacing: 0.3,
+                        }}
+                      ></Text>
+                    </View>
+                    {/* Divider between items */}
+                    {index < arr.length - 1 && (
+                      <View
+                        className="h-px mb-4"
+                        style={{ backgroundColor: "#EFEFEF" }}
+                      />
+                    )}
                   </View>
                 ))}
               </View>
-            </View>
-          </View>
+            </LinearGradient>
+          </Animated.View>
         )}
 
-        {/* Location Card - Modern Design */}
-        {location && (
-          <View className="px-5 mb-6">
-            <View
-              className="rounded-3xl overflow-hidden shadow-lg"
-              style={{
-                backgroundColor: COLORS.white,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.1,
-                shadowRadius: 12,
-                elevation: 6,
-              }}
-            >
-              <LinearGradient
-                colors={[`${COLORS.accent}12`, "transparent"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={{ padding: 20 }}
-              >
-                <View className="flex-row items-center mb-3">
-                  <View
-                    className="w-12 h-12 rounded-2xl items-center justify-center mr-3 shadow-sm"
-                    style={{
-                      backgroundColor: COLORS.white,
-                      shadowColor: COLORS.accent,
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.15,
-                      shadowRadius: 4,
-                      elevation: 3,
-                    }}
-                  >
-                    <Text className="text-2xl">📍</Text>
-                  </View>
-                  <View className="flex-1">
-                    <Text
-                      className="text-xl font-extrabold"
-                      style={{ color: COLORS.textPrimary }}
-                    >
-                      Your Location
-                    </Text>
-                    <Text
-                      className="text-xs font-medium mt-0.5"
-                      style={{ color: COLORS.textLight }}
-                    >
-                      Current detection area
-                    </Text>
-                  </View>
-                </View>
-
-                <View
-                  className="rounded-xl p-4 mt-2"
-                  style={{
-                    backgroundColor: COLORS.white,
-                    borderWidth: 1,
-                    borderColor: `${COLORS.accent}20`,
-                  }}
-                >
-                  <Text
-                    className="text-base font-bold mb-2"
-                    style={{ color: COLORS.textPrimary }}
-                  >
-                    {formatLocation(location)}
-                  </Text>
-                  <View className="flex-row items-center">
-                    <View
-                      className="px-2 py-1 rounded-md mr-2"
-                      style={{ backgroundColor: `${COLORS.primary}10` }}
-                    >
-                      <Text
-                        className="text-xs font-semibold"
-                        style={{ color: COLORS.primary }}
-                      >
-                        Lat: {location.latitude.toFixed(4)}
-                      </Text>
-                    </View>
-                    <View
-                      className="px-2 py-1 rounded-md"
-                      style={{ backgroundColor: `${COLORS.secondary}10` }}
-                    >
-                      <Text
-                        className="text-xs font-semibold"
-                        style={{ color: COLORS.secondary }}
-                      >
-                        Lon: {location.longitude.toFixed(4)}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </LinearGradient>
-            </View>
-          </View>
-        )}
-
-        {/* Footer Branding */}
-        <View className="items-center mt-4 mb-8 px-5">
-          <View
-            className="flex-row items-center rounded-full px-5 py-3"
-            style={{ backgroundColor: `${COLORS.primary}08` }}
+        {/* Footer Branding - Enhanced with soft glow */}
+        <Animated.View
+          className="items-center mt-10 mb-6"
+          style={{
+            opacity: fadeInAnim,
+          }}
+        >
+          <LinearGradient
+            colors={[
+              `${COLORS.primary}12`,
+              `${COLORS.accent}08`,
+              `${COLORS.lightCream}`,
+            ]}
+            className="rounded-full px-8 py-5 items-center"
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              shadowColor: COLORS.primary,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.2,
+              shadowRadius: 12,
+              elevation: 6,
+              borderWidth: 1.5,
+              borderColor: `${COLORS.primary}30`,
+              minWidth: 220,
+            }}
           >
-            <Text className="text-lg mr-2">🌿</Text>
             <Text
-              className="text-xs font-semibold tracking-wider"
-              style={{ color: COLORS.textLight }}
+              className="text-lg font-extrabold"
+              style={{ color: COLORS.textPrimary }}
             >
-              POWERED BY AI • BUILT FOR FARMERS
+              🥭 MangoCare
             </Text>
-          </View>
-        </View>
+          </LinearGradient>
+        </Animated.View>
       </Animated.ScrollView>
     </SafeAreaView>
   );
