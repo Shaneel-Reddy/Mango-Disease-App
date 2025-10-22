@@ -8,6 +8,7 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
+import { CONFIG } from "@/constants/config";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
@@ -47,6 +48,26 @@ export default function Index() {
 
   // Subtle bounce for uploader container
   const uploaderAnim = useRef(new Animated.Value(0)).current;
+  const getConfidenceColor = (confidence: number) => {
+    if (confidence >= CONFIG.CONFIDENCE_THRESHOLDS.HIGH) return COLORS.high;
+    if (confidence >= CONFIG.CONFIDENCE_THRESHOLDS.MEDIUM) return COLORS.medium;
+    return COLORS.low;
+  };
+
+  const getConfidenceText = (confidence: number) => {
+    if (confidence >= CONFIG.CONFIDENCE_THRESHOLDS.HIGH)
+      return "High Confidence";
+    if (confidence >= CONFIG.CONFIDENCE_THRESHOLDS.MEDIUM)
+      return "Medium Confidence";
+    return "Low Confidence";
+  };
+
+  const getConfidenceIcon = (confidence: number) => {
+    if (confidence >= CONFIG.CONFIDENCE_THRESHOLDS.HIGH)
+      return "checkmark-circle";
+    if (confidence >= CONFIG.CONFIDENCE_THRESHOLDS.MEDIUM) return "warning";
+    return "alert-circle";
+  };
 
   const loadLocationAndWeather = async () => {
     try {
@@ -576,7 +597,7 @@ export default function Index() {
           </Animated.View>
         )}
 
-        {/* Image Uploader Section - Enhanced with Animation */}
+        {/* Image Uploader Section - Premium Card */}
         <Animated.View
           className="mb-6"
           style={{
@@ -591,42 +612,47 @@ export default function Index() {
             ],
           }}
         >
-          <View className="flex-row items-center mb-4">
-            <LinearGradient
-              colors={[COLORS.primary, COLORS.accent]}
-              className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Ionicons name="camera" size={24} color={COLORS.white} />
-            </LinearGradient>
-            <Text
-              className="text-2xl font-extrabold"
-              style={{ color: COLORS.textPrimary }}
-            >
-              Analyze Leaf
-            </Text>
-          </View>
-
-          {/* Dashed container with helper text */}
-          <View
-            className="rounded-2xl p-4"
+          {/* Section Header */}
+          <Animated.View
             style={{
-              borderWidth: 2,
-              borderStyle: "dashed",
-              borderColor: `${COLORS.primary}50`,
-              backgroundColor: `${COLORS.lightCream}60`,
+              backgroundColor: COLORS.white,
+              borderRadius: 20,
+              padding: 20,
+              shadowColor: COLORS.primary,
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.12,
+              shadowRadius: 20,
+              elevation: 8,
+              borderWidth: 1,
+              borderColor: `${COLORS.primary}15`,
+              marginBottom: 24,
             }}
           >
-            <View className="flex-row items-center mb-3">
-              <Ionicons name="image" size={18} color={COLORS.accent} />
+            <View className="flex-row items-center justify-center">
+              <Ionicons name="camera" size={28} color={COLORS.primary} />
               <Text
-                className="ml-2 text-sm font-semibold"
-                style={{ color: COLORS.textSecondary, opacity: 0.9 }}
+                className="text-2xl font-extrabold ml-3"
+                style={{ color: COLORS.textPrimary }}
               >
-                Tap to capture or upload leaf photo
+                Analyze Leaf
               </Text>
             </View>
+          </Animated.View>
+
+          {/* Upload Button Card */}
+          <View
+            className="rounded-2xl p-6"
+            style={{
+              backgroundColor: COLORS.white,
+              shadowColor: COLORS.primary,
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.12,
+              shadowRadius: 20,
+              elevation: 8,
+              borderWidth: 1,
+              borderColor: `${COLORS.primary}15`,
+            }}
+          >
             <ImageUploader
               onImageSelected={handleImageSelected}
               loading={loading}
@@ -634,14 +660,14 @@ export default function Index() {
           </View>
         </Animated.View>
 
-        {/* Loading State with Shimmer Effect */}
+        {/* Loading State */}
         {loading && (
           <View className="mb-6">
             <LoadingIndicator />
           </View>
         )}
 
-        {/* Prediction Results Section - Enhanced with Slide-in Animation */}
+        {/* Prediction Results Section - Consistent with Weather Cards */}
         {prediction && !loading && (
           <Animated.View
             className="mb-6"
@@ -657,36 +683,440 @@ export default function Index() {
               ],
             }}
           >
-            {/* Gradient Header */}
-            <LinearGradient
-              colors={[COLORS.secondary, `${COLORS.secondary}CC`]}
-              className="rounded-2xl p-4 mb-4 flex-row items-center"
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+            {/* Results Header Card */}
+            <Animated.View
               style={{
+                backgroundColor: COLORS.white,
+                borderRadius: 20,
+                padding: 20,
                 shadowColor: COLORS.secondary,
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 6,
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.12,
+                shadowRadius: 20,
+                elevation: 8,
+                borderWidth: 1,
+                borderColor: `${COLORS.secondary}15`,
+                marginBottom: 24,
+                marginTop: 12,
               }}
             >
-              <View
-                className="w-10 h-10 rounded-xl items-center justify-center mr-3"
-                style={{ backgroundColor: `${COLORS.white}30` }}
-              >
-                <Ionicons name="analytics" size={24} color={COLORS.white} />
+              <View className="flex-row items-center justify-center">
+                <Text
+                  className="text-2xl font-extrabold ml-3"
+                  style={{ color: COLORS.textPrimary }}
+                >
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={18}
+                    color={COLORS.secondary}
+                  />
+                  Analysis Complete
+                </Text>
               </View>
-              <Text className="text-2xl font-extrabold text-white flex-1">
-                Analysis Complete
-              </Text>
-              <Ionicons
-                name="checkmark-circle"
-                size={28}
-                color={COLORS.white}
-              />
-            </LinearGradient>
-            <PredictionCard prediction={prediction} />
+            </Animated.View>
+
+            {/* Disease Detection & Confidence - 2 Cards in Row */}
+            <View className="flex-row mb-6" style={{ gap: 12 }}>
+              {/* Disease Card */}
+              <Animated.View
+                style={{
+                  flex: 1,
+                  backgroundColor: COLORS.white,
+                  borderRadius: 16,
+                  padding: 20,
+                  alignItems: "center",
+                  shadowColor: COLORS.secondary,
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 20,
+                  elevation: 8,
+                  borderWidth: 1,
+                  borderColor: `${COLORS.secondary}15`,
+                }}
+              >
+                <Ionicons name="medical" size={24} color={COLORS.secondary} />
+                <Text
+                  className="text-lg font-semibold mb-2 text-center mt-2"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  Detected Disease
+                </Text>
+                <Text
+                  className="text-base font-extrabold text-center"
+                  style={{ color: COLORS.secondary }}
+                  numberOfLines={2}
+                >
+                  {prediction.class}
+                </Text>
+              </Animated.View>
+
+              {/* Confidence Card */}
+              <Animated.View
+                style={{
+                  flex: 1,
+                  backgroundColor: COLORS.white,
+                  borderRadius: 16,
+                  padding: 20,
+                  alignItems: "center",
+                  shadowColor: getConfidenceColor(prediction.confidence),
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 20,
+                  elevation: 8,
+                  borderWidth: 1,
+                  borderColor: `${getConfidenceColor(prediction.confidence)}15`,
+                }}
+              >
+                <Ionicons
+                  name={getConfidenceIcon(prediction.confidence)}
+                  size={24}
+                  color={getConfidenceColor(prediction.confidence)}
+                />
+                <Text
+                  className="text-lg font-semibold mb-2 text-center mt-2"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  Confidence
+                </Text>
+                <Text
+                  className="text-2xl font-extrabold text-center"
+                  style={{ color: getConfidenceColor(prediction.confidence) }}
+                >
+                  {Math.round(prediction.confidence)}%
+                </Text>
+              </Animated.View>
+            </View>
+
+            {/* Status Alert Card */}
+            {prediction.alert && (
+              <Animated.View
+                className="mb-6"
+                style={{
+                  backgroundColor: COLORS.white,
+                  borderRadius: 20,
+                  padding: 20,
+                  shadowColor: COLORS.severityHigh,
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 20,
+                  elevation: 8,
+                  borderWidth: 1,
+                  borderColor: `${COLORS.severityHigh}15`,
+                }}
+              >
+                <View className="flex-row items-center mb-4">
+                  <Ionicons
+                    name="warning"
+                    size={24}
+                    color={COLORS.severityHigh}
+                  />
+                  <Text
+                    className="text-xl font-extrabold ml-3"
+                    style={{ color: COLORS.textPrimary }}
+                  >
+                    Alert
+                  </Text>
+                </View>
+                <Text
+                  className="text-sm leading-6"
+                  style={{ color: COLORS.textSecondary }}
+                >
+                  {prediction.alert}
+                </Text>
+              </Animated.View>
+            )}
+
+            {/* Environment Details - Section Header */}
+            {(prediction.region ||
+              prediction.season ||
+              prediction.temperature !== undefined ||
+              prediction.humidity !== undefined) && (
+              <>
+                <Animated.View
+                  style={{
+                    backgroundColor: COLORS.white,
+                    borderRadius: 20,
+                    padding: 20,
+                    shadowColor: COLORS.primary,
+                    shadowOffset: { width: 0, height: 8 },
+                    shadowOpacity: 0.12,
+                    shadowRadius: 20,
+                    elevation: 8,
+                    borderWidth: 1,
+                    borderColor: `${COLORS.primary}15`,
+                    marginBottom: 24,
+                    marginTop: 12,
+                  }}
+                >
+                  <View className="flex-row items-center justify-center">
+                    <Ionicons name="leaf" size={28} color={COLORS.primary} />
+                    <Text
+                      className="text-2xl font-extrabold ml-3"
+                      style={{ color: COLORS.textPrimary }}
+                    >
+                      Environment Data
+                    </Text>
+                  </View>
+                </Animated.View>
+
+                {/* Environment Cards - 2x2 Grid */}
+                <View className="mb-6">
+                  {/* Row 1 */}
+                  {(prediction.region || prediction.season) && (
+                    <View className="flex-row mb-4" style={{ gap: 12 }}>
+                      {prediction.region && (
+                        <Animated.View
+                          style={{
+                            flex: 1,
+                            backgroundColor: COLORS.white,
+                            borderRadius: 16,
+                            padding: 20,
+                            alignItems: "center",
+                            shadowColor: COLORS.secondary,
+                            shadowOffset: { width: 0, height: 8 },
+                            shadowOpacity: 0.12,
+                            shadowRadius: 20,
+                            elevation: 8,
+                            borderWidth: 1,
+                            borderColor: `${COLORS.secondary}15`,
+                          }}
+                        >
+                          <Ionicons
+                            name="location"
+                            size={24}
+                            color={COLORS.secondary}
+                          />
+                          <Text
+                            className="text-lg font-semibold mb-2 text-center mt-2"
+                            style={{ color: COLORS.textSecondary }}
+                          >
+                            Region
+                          </Text>
+                          <Text
+                            className="text-base font-extrabold text-center"
+                            style={{ color: COLORS.secondary }}
+                          >
+                            {prediction.region}
+                          </Text>
+                        </Animated.View>
+                      )}
+
+                      {prediction.season && (
+                        <Animated.View
+                          style={{
+                            flex: 1,
+                            backgroundColor: COLORS.white,
+                            borderRadius: 16,
+                            padding: 20,
+                            alignItems: "center",
+                            shadowColor: COLORS.accent,
+                            shadowOffset: { width: 0, height: 8 },
+                            shadowOpacity: 0.12,
+                            shadowRadius: 20,
+                            elevation: 8,
+                            borderWidth: 1,
+                            borderColor: `${COLORS.accent}15`,
+                          }}
+                        >
+                          <Ionicons
+                            name="calendar"
+                            size={24}
+                            color={COLORS.accent}
+                          />
+                          <Text
+                            className="text-lg font-semibold mb-2 text-center mt-2"
+                            style={{ color: COLORS.textSecondary }}
+                          >
+                            Season
+                          </Text>
+                          <Text
+                            className="text-base font-extrabold text-center"
+                            style={{ color: COLORS.accent }}
+                          >
+                            {prediction.season}
+                          </Text>
+                        </Animated.View>
+                      )}
+                    </View>
+                  )}
+
+                  {/* Row 2 */}
+                  {(prediction.temperature !== undefined ||
+                    prediction.humidity !== undefined) && (
+                    <View className="flex-row" style={{ gap: 12 }}>
+                      {prediction.temperature !== undefined && (
+                        <Animated.View
+                          style={{
+                            flex: 1,
+                            backgroundColor: COLORS.white,
+                            borderRadius: 16,
+                            padding: 20,
+                            alignItems: "center",
+                            shadowColor: COLORS.primary,
+                            shadowOffset: { width: 0, height: 8 },
+                            shadowOpacity: 0.12,
+                            shadowRadius: 20,
+                            elevation: 8,
+                            borderWidth: 1,
+                            borderColor: `${COLORS.primary}15`,
+                          }}
+                        >
+                          <Ionicons
+                            name="thermometer"
+                            size={24}
+                            color={COLORS.primary}
+                          />
+                          <Text
+                            className="text-lg font-semibold mb-2 text-center mt-2"
+                            style={{ color: COLORS.textSecondary }}
+                          >
+                            Temperature
+                          </Text>
+                          <Text
+                            className="text-2xl font-extrabold text-center"
+                            style={{ color: COLORS.primary }}
+                          >
+                            {prediction.temperature.toFixed(1)}°C
+                          </Text>
+                        </Animated.View>
+                      )}
+
+                      {prediction.humidity !== undefined && (
+                        <Animated.View
+                          style={{
+                            flex: 1,
+                            backgroundColor: COLORS.white,
+                            borderRadius: 16,
+                            padding: 20,
+                            alignItems: "center",
+                            shadowColor: COLORS.secondary,
+                            shadowOffset: { width: 0, height: 8 },
+                            shadowOpacity: 0.12,
+                            shadowRadius: 20,
+                            elevation: 8,
+                            borderWidth: 1,
+                            borderColor: `${COLORS.secondary}15`,
+                          }}
+                        >
+                          <Ionicons
+                            name="water"
+                            size={24}
+                            color={COLORS.secondary}
+                          />
+                          <Text
+                            className="text-lg font-semibold mb-2 text-center mt-2"
+                            style={{ color: COLORS.textSecondary }}
+                          >
+                            Humidity
+                          </Text>
+                          <Text
+                            className="text-2xl font-extrabold text-center"
+                            style={{ color: COLORS.secondary }}
+                          >
+                            {prediction.humidity.toFixed(1)}%
+                          </Text>
+                        </Animated.View>
+                      )}
+                    </View>
+                  )}
+                </View>
+              </>
+            )}
+
+            {/* All Predictions Section */}
+            {prediction.all_predictions &&
+              Object.keys(prediction.all_predictions).length > 1 && (
+                <>
+                  <Animated.View
+                    style={{
+                      backgroundColor: COLORS.white,
+                      borderRadius: 20,
+                      padding: 20,
+                      shadowColor: COLORS.accent,
+                      shadowOffset: { width: 0, height: 8 },
+                      shadowOpacity: 0.12,
+                      shadowRadius: 20,
+                      elevation: 8,
+                      borderWidth: 1,
+                      borderColor: `${COLORS.accent}15`,
+                      marginBottom: 24,
+                      marginTop: 12,
+                    }}
+                  >
+                    <View className="flex-row items-center justify-center">
+                      <Ionicons
+                        name="bar-chart"
+                        size={28}
+                        color={COLORS.accent}
+                      />
+                      <Text
+                        className="text-2xl font-extrabold ml-3"
+                        style={{ color: COLORS.textPrimary }}
+                      >
+                        All Probabilities
+                      </Text>
+                    </View>
+                  </Animated.View>
+
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className="mb-6"
+                    contentContainerStyle={{ paddingHorizontal: 2 }}
+                  >
+                    {Object.entries(prediction.all_predictions)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([disease, prob], index) => (
+                        <Animated.View
+                          key={disease}
+                          className="mr-4"
+                          style={{
+                            minWidth: 140,
+                            backgroundColor: COLORS.white,
+                            borderRadius: 16,
+                            padding: 20,
+                            alignItems: "center",
+                            shadowColor: COLORS.accent,
+                            shadowOffset: { width: 0, height: 8 },
+                            shadowOpacity: 0.12,
+                            shadowRadius: 20,
+                            elevation: 8,
+                            borderWidth: 1,
+                            borderColor: `${COLORS.accent}15`,
+                            marginRight: 12,
+                          }}
+                        >
+                          <Text
+                            className="text-sm font-semibold mb-3 text-center"
+                            style={{ color: COLORS.textSecondary }}
+                            numberOfLines={2}
+                          >
+                            {disease}
+                          </Text>
+                          <Text
+                            className="text-2xl font-extrabold text-center"
+                            style={{ color: COLORS.accent }}
+                          >
+                            {prob.toFixed(0)}%
+                          </Text>
+                          <View
+                            className="rounded-full h-2 mt-3 overflow-hidden w-full"
+                            style={{ backgroundColor: `${COLORS.accent}10` }}
+                          >
+                            <View
+                              style={{
+                                height: 8,
+                                width: `${Math.min(prob, 100)}%`,
+                                backgroundColor: COLORS.accent,
+                                borderRadius: 999,
+                              }}
+                            />
+                          </View>
+                        </Animated.View>
+                      ))}
+                  </ScrollView>
+                </>
+              )}
           </Animated.View>
         )}
 

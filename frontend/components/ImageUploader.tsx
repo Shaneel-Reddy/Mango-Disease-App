@@ -246,32 +246,50 @@ export default function ImageUploader({
       {selectedImage && !loading && (
         <TouchableOpacity
           onPress={() => onImageSelected(selectedImage)}
-          className="mt-6 rounded-full py-4 px-8 flex-row items-center justify-center"
-          style={{
-            backgroundColor: COLORS.secondary,
-            shadowColor: COLORS.secondary,
-            shadowOffset: { width: 0, height: 6 },
-            shadowOpacity: 0.35,
-            shadowRadius: 12,
-            elevation: 8,
-          }}
           activeOpacity={0.8}
+          style={{
+            width: 360,
+            height: 50,
+            backgroundColor: COLORS.secondary,
+            borderRadius: 12,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 6,
+            elevation: 6,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <View
-            className="w-9 h-9 rounded-full items-center justify-center mr-3"
-            style={{ backgroundColor: `${COLORS.white}30` }}
-          >
-            <Ionicons name="leaf" size={20} color={COLORS.textWhite} />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {/* Left Icon */}
+            <Ionicons
+              name="leaf"
+              size={22}
+              color={COLORS.textWhite}
+              style={{ marginRight: 8 }}
+            />
+
+            {/* Text */}
+            <Text
+              style={{
+                color: COLORS.textWhite,
+                fontWeight: "bold",
+                fontSize: 12,
+              }}
+            >
+              Detect Disease
+            </Text>
+
+            {/* Right Icon */}
+            <Ionicons
+              name="arrow-forward"
+              size={22}
+              color={COLORS.textWhite}
+              style={{ marginLeft: 8 }}
+            />
           </View>
-          <Text className="text-white font-extrabold text-lg">
-            Detect Disease
-          </Text>
-          <Ionicons
-            name="arrow-forward"
-            size={20}
-            color={COLORS.textWhite}
-            style={{ marginLeft: 8 }}
-          />
         </TouchableOpacity>
       )}
     </View>

@@ -38,82 +38,128 @@ export default function PredictionCard({ prediction }: PredictionCardProps) {
     <View
       className="rounded-3xl overflow-hidden"
       style={{
-        shadowColor: confidenceColor,
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.2,
-        shadowRadius: 12,
-        elevation: 8,
         backgroundColor: COLORS.white,
+        shadowColor: confidenceColor,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.12,
+        shadowRadius: 20,
+        elevation: 8,
+        borderWidth: 1,
+        borderColor: `${confidenceColor}15`,
       }}
     >
-      {/* Gradient Top Border */}
+      {/* Premium Gradient Top Border */}
       <LinearGradient
-        colors={[confidenceColor, `${confidenceColor}AA`]}
+        colors={[
+          confidenceColor,
+          `${confidenceColor}80`,
+          `${confidenceColor}40`,
+        ]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        style={{ height: 4 }}
+        style={{ height: 6 }}
+        className="rounded-t-3xl"
       />
 
       <View className="p-6">
-        {/* Disease Name and Confidence Badge */}
-        <View className="flex-row items-center justify-between mb-5">
-          <View className="flex-1 mr-3">
-            <Text
-              className="text-xs font-bold mb-1"
-              style={{ color: COLORS.textSecondary }}
+        {/* 1. Disease Header Card */}
+        <View
+          className="rounded-2xl p-5 mb-6"
+          style={{
+            backgroundColor: `${COLORS.white}95`,
+            borderWidth: 1,
+            borderColor: `${confidenceColor}15`,
+            shadowColor: confidenceColor,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.08,
+            shadowRadius: 12,
+            elevation: 4,
+          }}
+        >
+          <View className="flex-row items-center">
+            <LinearGradient
+              colors={[`${confidenceColor}20`, `${confidenceColor}10`]}
+              className="rounded-2xl p-3 mr-4"
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
             >
-              DETECTED DISEASE
-            </Text>
-            <Text
-              className="text-2xl font-extrabold"
-              style={{ color: COLORS.textPrimary }}
-            >
-              {prediction.class}
-            </Text>
-          </View>
-          <View
-            className="px-5 py-3 rounded-2xl flex-row items-center"
-            style={{
-              backgroundColor: `${confidenceColor}20`,
-              borderWidth: 2,
-              borderColor: `${confidenceColor}40`,
-            }}
-          >
-            <Ionicons
-              name={getConfidenceIcon(prediction.confidence)}
-              size={20}
-              color={confidenceColor}
-            />
-            <Text
-              className="ml-2 font-extrabold text-lg"
-              style={{ color: confidenceColor }}
-            >
-              {Math.round(prediction.confidence)}%
-            </Text>
+              <Ionicons
+                name={getConfidenceIcon(prediction.confidence)}
+                size={24}
+                color={confidenceColor}
+              />
+            </LinearGradient>
+            <View className="flex-1">
+              <Text
+                className="text-xs font-bold uppercase tracking-wide mb-2"
+                style={{ color: COLORS.textSecondary }}
+              >
+                Detected Disease
+              </Text>
+              <Text
+                className="text-xl font-extrabold"
+                style={{ color: COLORS.textPrimary }}
+              >
+                {prediction.class}
+              </Text>
+            </View>
           </View>
         </View>
 
-        {/* Confidence Level with Enhanced Progress Bar */}
-        <View className="mb-6">
-          <View className="flex-row items-center justify-between mb-2">
-            <Text
-              className="text-sm font-bold"
-              style={{ color: COLORS.textSecondary }}
+        {/* 2. Confidence Metrics Card */}
+        <View
+          className="rounded-2xl p-5 mb-6"
+          style={{
+            backgroundColor: `${COLORS.white}95`,
+            borderWidth: 1,
+            borderColor: `${confidenceColor}15`,
+            shadowColor: confidenceColor,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.08,
+            shadowRadius: 12,
+            elevation: 4,
+          }}
+        >
+          <View className="flex-row items-center justify-between mb-5">
+            <View>
+              <Text
+                className="text-xs font-bold uppercase tracking-wide mb-2"
+                style={{ color: COLORS.textSecondary }}
+              >
+                {getConfidenceText(prediction.confidence)}
+              </Text>
+              <Text
+                className="text-3xl font-extrabold"
+                style={{ color: confidenceColor }}
+              >
+                {Math.round(prediction.confidence)}%
+              </Text>
+            </View>
+            <LinearGradient
+              colors={[`${confidenceColor}25`, `${confidenceColor}15`]}
+              className="rounded-2xl p-4"
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
             >
-              {getConfidenceText(prediction.confidence)}
-            </Text>
-            <Ionicons
-              name="shield-checkmark"
-              size={18}
-              color={confidenceColor}
-            />
+              <Ionicons
+                name="shield-checkmark"
+                size={24}
+                color={confidenceColor}
+              />
+            </LinearGradient>
           </View>
+
+          {/* Progress Bar */}
           <View
             className="rounded-full h-3 overflow-hidden"
-            style={{ backgroundColor: `${confidenceColor}15` }}
+            style={{ backgroundColor: `${confidenceColor}10` }}
           >
             <LinearGradient
-              colors={[confidenceColor, `${confidenceColor}CC`]}
+              colors={[
+                confidenceColor,
+                `${confidenceColor}CC`,
+                confidenceColor,
+              ]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={{
@@ -125,29 +171,45 @@ export default function PredictionCard({ prediction }: PredictionCardProps) {
           </View>
         </View>
 
-        {/* Treatment Information */}
+        {/* 3. Alert Card */}
         {prediction.alert && (
           <View
-            className="rounded-2xl p-5 mb-5"
+            className="rounded-2xl p-5 mb-6"
             style={{
-              backgroundColor: `${COLORS.severityHigh}10`,
+              backgroundColor: `${COLORS.white}95`,
               borderWidth: 1,
-              borderColor: `${COLORS.severityHigh}30`,
+              borderColor: `${COLORS.severityHigh}20`,
+              shadowColor: COLORS.severityHigh,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.08,
+              shadowRadius: 12,
+              elevation: 4,
             }}
           >
-            <View className="flex-row items-center mb-3">
-              <View
-                className="w-10 h-10 rounded-full items-center justify-center"
-                style={{ backgroundColor: COLORS.severityHigh }}
+            <View className="flex-row items-center mb-4">
+              <LinearGradient
+                colors={[
+                  `${COLORS.severityHigh}20`,
+                  `${COLORS.severityHigh}10`,
+                ]}
+                className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
               >
-                <Ionicons name="warning" size={20} color={COLORS.textWhite} />
+                <Ionicons
+                  name="warning"
+                  size={20}
+                  color={COLORS.severityHigh}
+                />
+              </LinearGradient>
+              <View className="flex-1">
+                <Text
+                  className="font-extrabold text-base"
+                  style={{ color: COLORS.textPrimary }}
+                >
+                  ⚠️ Alert
+                </Text>
               </View>
-              <Text
-                className="ml-3 font-extrabold text-base"
-                style={{ color: COLORS.textPrimary }}
-              >
-                ⚠️ Alert
-              </Text>
             </View>
             <Text
               className="text-sm leading-6 font-medium"
@@ -158,172 +220,230 @@ export default function PredictionCard({ prediction }: PredictionCardProps) {
           </View>
         )}
 
-        {/* Location & Environment Info */}
-        <View
-          className="rounded-2xl p-5 mb-5"
-          style={{
-            backgroundColor: `${COLORS.lightCream}`,
-            borderWidth: 1,
-            borderColor: `${COLORS.primary}20`,
-          }}
-        >
-          <View className="mb-1">
-            <Text
-              className="text-xs font-bold mb-3"
-              style={{ color: COLORS.textSecondary }}
-            >
-              ENVIRONMENT DETAILS
-            </Text>
-          </View>
-          {/* Region */}
-          <View className="flex-row items-center mb-3">
-            <View
-              className="w-8 h-8 rounded-full items-center justify-center"
-              style={{ backgroundColor: `${COLORS.secondary}20` }}
-            >
-              <Ionicons name="location" size={16} color={COLORS.secondary} />
-            </View>
-            <Text
-              className="ml-3 text-sm font-medium"
-              style={{ color: COLORS.textSecondary }}
-            >
-              Region:{" "}
-              <Text
-                className="font-extrabold"
-                style={{ color: COLORS.textPrimary }}
-              >
-                {prediction.region}
-              </Text>
-            </Text>
-          </View>
-
-          {/* Season */}
-          <View className="flex-row items-center mb-3">
-            <View
-              className="w-8 h-8 rounded-full items-center justify-center"
-              style={{ backgroundColor: `${COLORS.secondary}20` }}
-            >
-              <Ionicons name="calendar" size={16} color={COLORS.secondary} />
-            </View>
-            <Text
-              className="ml-3 text-sm font-medium"
-              style={{ color: COLORS.textSecondary }}
-            >
-              Season:{" "}
-              <Text
-                className="font-extrabold"
-                style={{ color: COLORS.textPrimary }}
-              >
-                {prediction.season}
-              </Text>
-            </Text>
-          </View>
-
-          {/* Temperature */}
-          {prediction.temperature !== undefined && (
-            <View className="flex-row items-center mb-3">
-              <View
-                className="w-8 h-8 rounded-full items-center justify-center"
-                style={{ backgroundColor: `${COLORS.primary}20` }}
-              >
-                <Ionicons name="thermometer" size={16} color={COLORS.primary} />
-              </View>
-              <Text
-                className="ml-3 text-sm font-medium"
-                style={{ color: COLORS.textSecondary }}
-              >
-                Temperature:{" "}
-                <Text
-                  className="font-extrabold"
-                  style={{ color: COLORS.textPrimary }}
-                >
-                  {prediction.temperature.toFixed(1)}°C
-                </Text>
-              </Text>
-            </View>
-          )}
-
-          {/* Humidity */}
-          {prediction.humidity !== undefined && (
-            <View className="flex-row items-center">
-              <View
-                className="w-8 h-8 rounded-full items-center justify-center"
-                style={{ backgroundColor: `${COLORS.secondary}20` }}
-              >
-                <Ionicons name="water" size={16} color={COLORS.secondary} />
-              </View>
-              <Text
-                className="ml-3 text-sm font-medium"
-                style={{ color: COLORS.textSecondary }}
-              >
-                Humidity:{" "}
-                <Text
-                  className="font-extrabold"
-                  style={{ color: COLORS.textPrimary }}
-                >
-                  {prediction.humidity}%
-                </Text>
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* All Predictions */}
-        {prediction.all_predictions && (
+        {/* 4. Environment Details Card */}
+        {(prediction.region ||
+          prediction.season ||
+          prediction.temperature !== undefined ||
+          prediction.humidity !== undefined) && (
           <View
-            className="pt-5 mt-5"
+            className="rounded-2xl p-6 mb-6"
             style={{
-              borderTopWidth: 1,
-              borderTopColor: `${COLORS.primary}20`,
+              backgroundColor: `${COLORS.white}95`,
+              borderWidth: 1,
+              borderColor: `${COLORS.primary}15`,
+              shadowColor: COLORS.primary,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.08,
+              shadowRadius: 12,
+              elevation: 4,
             }}
           >
             <Text
-              className="text-xs font-bold mb-4"
+              className="text-xs font-bold mb-6 uppercase tracking-wide"
               style={{ color: COLORS.textSecondary }}
             >
-              ALL DISEASE PROBABILITIES
+              Environment Details
             </Text>
-            {Object.entries(prediction.all_predictions)
-              .sort((a, b) => b[1] - a[1])
-              .map(([disease, prob]) => (
-                <View key={disease} className="mb-3">
-                  <View className="flex-row items-center justify-between mb-1.5">
+
+            <View className="space-y-5">
+              {prediction.region && (
+                <View className="flex-row items-center">
+                  <LinearGradient
+                    colors={[`${COLORS.secondary}20`, `${COLORS.secondary}10`]}
+                    className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Ionicons
+                      name="location"
+                      size={20}
+                      color={COLORS.secondary}
+                    />
+                  </LinearGradient>
+                  <View className="flex-1">
                     <Text
-                      className="text-xs font-semibold"
+                      className="text-sm font-medium"
                       style={{ color: COLORS.textSecondary }}
                     >
-                      {disease}
+                      Region
                     </Text>
                     <Text
-                      className="text-xs font-extrabold"
+                      className="font-extrabold mt-1"
                       style={{ color: COLORS.textPrimary }}
                     >
-                      {prob.toFixed(1)}%
+                      {prediction.region}
                     </Text>
                   </View>
-                  <View
-                    className="rounded-full h-2 overflow-hidden"
-                    style={{ backgroundColor: `${COLORS.secondary}10` }}
+                </View>
+              )}
+
+              {prediction.season && (
+                <View className="flex-row items-center">
+                  <LinearGradient
+                    colors={[`${COLORS.secondary}20`, `${COLORS.secondary}10`]}
+                    className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
                   >
-                    <LinearGradient
-                      colors={
-                        prob >= 50
-                          ? [COLORS.secondary, `${COLORS.secondary}CC`]
-                          : [`${COLORS.border}`, `${COLORS.border}CC`]
-                      }
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={{
-                        height: 8,
-                        width: `${prob}%`,
-                        borderRadius: 999,
-                      }}
+                    <Ionicons
+                      name="calendar"
+                      size={20}
+                      color={COLORS.secondary}
                     />
+                  </LinearGradient>
+                  <View className="flex-1">
+                    <Text
+                      className="text-sm font-medium"
+                      style={{ color: COLORS.textSecondary }}
+                    >
+                      Season
+                    </Text>
+                    <Text
+                      className="font-extrabold mt-1"
+                      style={{ color: COLORS.textPrimary }}
+                    >
+                      {prediction.season}
+                    </Text>
                   </View>
                 </View>
-              ))}
+              )}
+
+              {prediction.temperature !== undefined && (
+                <View className="flex-row items-center">
+                  <LinearGradient
+                    colors={[`${COLORS.primary}20`, `${COLORS.primary}10`]}
+                    className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Ionicons
+                      name="thermometer"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  </LinearGradient>
+                  <View className="flex-1">
+                    <Text
+                      className="text-sm font-medium"
+                      style={{ color: COLORS.textSecondary }}
+                    >
+                      Temperature
+                    </Text>
+                    <Text
+                      className="font-extrabold mt-1"
+                      style={{ color: COLORS.textPrimary }}
+                    >
+                      {prediction.temperature.toFixed(1)}°C
+                    </Text>
+                  </View>
+                </View>
+              )}
+
+              {prediction.humidity !== undefined && (
+                <View className="flex-row items-center">
+                  <LinearGradient
+                    colors={[`${COLORS.secondary}20`, `${COLORS.secondary}10`]}
+                    className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Ionicons name="water" size={20} color={COLORS.secondary} />
+                  </LinearGradient>
+                  <View className="flex-1">
+                    <Text
+                      className="text-sm font-medium"
+                      style={{ color: COLORS.textSecondary }}
+                    >
+                      Humidity
+                    </Text>
+                    <Text
+                      className="font-extrabold mt-1"
+                      style={{ color: COLORS.textPrimary }}
+                    >
+                      {prediction.humidity}%
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
           </View>
         )}
+
+        {/* 5. All Predictions Cards */}
+        {prediction.all_predictions &&
+          Object.keys(prediction.all_predictions).length > 1 && (
+            <View
+              className="pt-6"
+              style={{
+                borderTopWidth: 1,
+                borderTopColor: `${COLORS.primary}15`,
+              }}
+            >
+              <Text
+                className="text-xs font-bold mb-6 uppercase tracking-wide"
+                style={{ color: COLORS.textSecondary }}
+              >
+                All Disease Probabilities
+              </Text>
+              <View className="space-y-4">
+                {Object.entries(prediction.all_predictions)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([disease, prob]) => (
+                    <View
+                      key={disease}
+                      className="rounded-2xl p-4"
+                      style={{
+                        backgroundColor: `${COLORS.white}95`,
+                        borderWidth: 1,
+                        borderColor: `${COLORS.secondary}15`,
+                        shadowColor: COLORS.secondary,
+                        shadowOffset: { width: 0, height: 4 },
+                        shadowOpacity: 0.06,
+                        shadowRadius: 10,
+                        elevation: 3,
+                      }}
+                    >
+                      <View className="flex-row items-center justify-between">
+                        <Text
+                          className="text-sm font-semibold flex-1"
+                          style={{ color: COLORS.textSecondary }}
+                          numberOfLines={1}
+                        >
+                          {disease}
+                        </Text>
+                        <View className="ml-4 w-24 items-end">
+                          <Text
+                            className="text-sm font-extrabold mb-3"
+                            style={{ color: COLORS.textPrimary }}
+                          >
+                            {prob.toFixed(1)}%
+                          </Text>
+                          <View
+                            className="rounded-full h-2 overflow-hidden w-full"
+                            style={{ backgroundColor: `${COLORS.secondary}10` }}
+                          >
+                            <LinearGradient
+                              colors={
+                                prob >= 50
+                                  ? [COLORS.secondary, `${COLORS.secondary}CC`]
+                                  : [`${COLORS.border}80`, `${COLORS.border}CC`]
+                              }
+                              start={{ x: 0, y: 0 }}
+                              end={{ x: 1, y: 0 }}
+                              style={{
+                                height: 8,
+                                width: `${Math.min(prob, 100)}%`,
+                                borderRadius: 999,
+                              }}
+                            />
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  ))}
+              </View>
+            </View>
+          )}
       </View>
     </View>
   );
