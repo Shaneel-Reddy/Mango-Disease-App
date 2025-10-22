@@ -629,11 +629,11 @@ export default function Index() {
             }}
           >
             <View className="flex-row items-center justify-center">
-              <Ionicons name="camera" size={28} color={COLORS.primary} />
               <Text
                 className="text-2xl font-extrabold ml-3"
                 style={{ color: COLORS.textPrimary }}
               >
+                <Ionicons name="camera" size={18} color={COLORS.primary} />{" "}
                 Analyze Leaf
               </Text>
             </View>
@@ -1120,115 +1120,146 @@ export default function Index() {
           </Animated.View>
         )}
 
-        {/* Photography Tips Section - Gradient card with numbered bullets */}
+        {/* Photography Tips Section */}
         {!loading && !prediction && (
           <Animated.View
             className="mb-6"
             style={{
               opacity: fadeInAnim,
               transform: [{ translateY: slideInAnim }],
+              marginTop: 12,
             }}
           >
-            {/* Section Header */}
-            <View className="flex-row items-center mb-3">
-              <Text
-                className="text-xl font-extrabold"
-                style={{ color: COLORS.textPrimary }}
-              >
-                Photography Tips
-              </Text>
-            </View>
-
-            {/* Tips Card */}
-            <LinearGradient
-              colors={[`${COLORS.primary}10`, `${COLORS.accent}0D`]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              className="rounded-2xl"
+            {/* Section Header Card */}
+            <Animated.View
+              style={{
+                backgroundColor: COLORS.white,
+                borderRadius: 20,
+                padding: 20,
+                shadowColor: COLORS.accent,
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.12,
+                shadowRadius: 20,
+                elevation: 8,
+                borderWidth: 1,
+                borderColor: `${COLORS.accent}15`,
+                marginBottom: 24,
+              }}
             >
-              <View
-                className="rounded-2xl p-5"
-                style={{
-                  backgroundColor: COLORS.card,
-                  borderWidth: 1,
-                  borderColor: "#EDEDED",
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.08,
-                  shadowRadius: 6,
-                  elevation: 3,
-                }}
-              >
-                {[
-                  "Use natural, even lighting. Avoid harsh shadows.",
-                  "Ensure the leaf is in sharp focus against a plain background.",
-                  "Capture a clear, high-resolution image of the affected area.",
-                ].map((tip, index, arr) => (
-                  <View key={index}>
-                    <View className="flex-row items-start mb-4">
-                      {/* Numbered badge */}
-
-                      <Text className="text-black font-extrabold text-sm">
-                        {index + 1}. {tip}
-                      </Text>
-                      {/* Text */}
-                      <Text
-                        className="text-base leading-7 flex-1"
-                        style={{
-                          color: COLORS.textSecondary,
-                          fontWeight: "600",
-                          letterSpacing: 0.3,
-                        }}
-                      ></Text>
-                    </View>
-                    {/* Divider between items */}
-                    {index < arr.length - 1 && (
-                      <View
-                        className="h-px mb-4"
-                        style={{ backgroundColor: "#EFEFEF" }}
-                      />
-                    )}
-                  </View>
-                ))}
+              <View className="flex-row items-center justify-center">
+                <Text
+                  className="text-2xl font-extrabold ml-3"
+                  style={{ color: COLORS.textPrimary }}
+                >
+                  <Ionicons name="bulb" size={18} color={COLORS.accent} />{" "}
+                  Photography Tips
+                </Text>
               </View>
-            </LinearGradient>
+            </Animated.View>
+
+            {/* Tips Cards - Vertical Stack */}
+            <View className="space-y-3">
+              {[
+                {
+                  icon: "sunny",
+                  title: "Use Natural Lighting",
+                  description:
+                    "Ensure good lighting conditions and avoid harsh shadows",
+                },
+                {
+                  icon: "focus",
+                  title: "Focus on the Leaf",
+                  description:
+                    "Ensure the leaf is in sharp focus against a plain background",
+                },
+                {
+                  icon: "image",
+                  title: "High Resolution",
+                  description:
+                    "Capture a clear, high-resolution image of the affected area",
+                },
+              ].map((tip, index) => (
+                <Animated.View
+                  key={index}
+                  style={{
+                    backgroundColor: COLORS.white,
+                    borderRadius: 16,
+                    padding: 18,
+                    flexDirection: "row",
+                    shadowColor: COLORS.accent,
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.08,
+                    shadowRadius: 12,
+                    elevation: 4,
+                    borderWidth: 1,
+                    borderColor: `${COLORS.accent}15`,
+                    marginBottom: 8,
+                  }}
+                >
+                  {/* Icon Container */}
+                  <View
+                    className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                    style={{
+                      marginRight: 10,
+                    }}
+                  >
+                    <Ionicons
+                      name={tip.icon as any}
+                      size={18}
+                      color={COLORS.accent}
+                    />
+                  </View>
+
+                  {/* Content */}
+                  <View className="flex-1">
+                    <Text
+                      className="text-base font-extrabold mb-1"
+                      style={{ color: COLORS.textPrimary }}
+                    >
+                      {tip.title}
+                    </Text>
+                    <Text
+                      className="text-sm leading-5 font-medium"
+                      style={{ color: COLORS.textSecondary }}
+                    >
+                      {tip.description}
+                    </Text>
+                  </View>
+                </Animated.View>
+              ))}
+            </View>
           </Animated.View>
         )}
 
-        {/* Footer Branding - Enhanced with soft glow */}
+        {/* Footer Branding - Enhanced Footer Feel */}
         <Animated.View
-          className="items-center mt-10 mb-6"
           style={{
-            opacity: fadeInAnim,
+            marginTop: 40,
+            width: "100%",
+            alignItems: "center",
           }}
         >
-          <LinearGradient
-            colors={[
-              `${COLORS.primary}12`,
-              `${COLORS.accent}08`,
-              `${COLORS.lightCream}`,
-            ]}
-            className="rounded-full px-8 py-5 items-center"
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={{
-              shadowColor: COLORS.primary,
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.2,
-              shadowRadius: 12,
-              elevation: 6,
-              borderWidth: 1.5,
-              borderColor: `${COLORS.primary}30`,
-              minWidth: 220,
-            }}
+          {/* Brand Name */}
+          <Text
+            className="text-lg font-extrabold mb-1"
+            style={{ color: COLORS.textPrimary }}
           >
-            <Text
-              className="text-lg font-extrabold"
-              style={{ color: COLORS.textPrimary }}
-            >
-              🥭 MangoCare
-            </Text>
-          </LinearGradient>
+            MangoCare 🥭
+          </Text>
+
+          {/* Tagline */}
+          <Text
+            className="text-sm text-center font-medium"
+            style={{ color: COLORS.textSecondary, maxWidth: 280 }}
+          >
+            Your friendly companion for plant health. Capture, detect, and care
+            for your plants with ease!
+          </Text>
+
+          {/* Decorative Emoji Line */}
+          <Text className="mt-2 text-base" style={{ color: COLORS.primary }}>
+            🌱🍃🍂🍁🌿
+          </Text>
         </Animated.View>
       </Animated.ScrollView>
     </SafeAreaView>

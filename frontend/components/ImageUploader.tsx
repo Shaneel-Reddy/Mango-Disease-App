@@ -114,37 +114,40 @@ export default function ImageUploader({
     <View className="w-full">
       {selectedImage ? (
         <View className="relative">
+          {/* Selected Image */}
           <View
             className="rounded-3xl overflow-hidden"
             style={{
               shadowColor: COLORS.primary,
               shadowOffset: { width: 0, height: 6 },
-              shadowOpacity: 0.2,
+              shadowOpacity: 0.15,
               shadowRadius: 12,
-              elevation: 8,
-              borderWidth: 2,
+              elevation: 10,
+              borderWidth: 1,
               borderColor: `${COLORS.primary}40`,
             }}
           >
             <Image
               source={{ uri: selectedImage }}
               className="w-full"
-              style={{ height: 300 }}
+              style={{ height: 320 }}
               resizeMode="cover"
             />
           </View>
+
+          {/* Loading Overlay */}
           {loading && (
             <View
               className="absolute inset-0 rounded-3xl justify-center items-center"
-              style={{ backgroundColor: `${COLORS.overlay}E6` }}
+              style={{ backgroundColor: `${COLORS.overlay}CC` }} // subtle overlay
             >
               <View
-                className="rounded-3xl p-8 items-center"
+                className="rounded-2xl px-8 py-6 items-center"
                 style={{
-                  backgroundColor: `${COLORS.white}F5`,
+                  backgroundColor: `${COLORS.white}F0`,
                   shadowColor: COLORS.primary,
                   shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
+                  shadowOpacity: 0.25,
                   shadowRadius: 10,
                   elevation: 8,
                 }}
@@ -154,7 +157,7 @@ export default function ImageUploader({
                   className="mt-4 font-extrabold text-base"
                   style={{ color: COLORS.textPrimary }}
                 >
-                  Analyzing image...
+                  Analyzing Image...
                 </Text>
                 <Text
                   className="mt-1 font-medium text-sm"
@@ -165,6 +168,8 @@ export default function ImageUploader({
               </View>
             </View>
           )}
+
+          {/* Edit / Change Image Button */}
           {!loading && (
             <TouchableOpacity
               onPress={showImageOptions}
@@ -176,7 +181,7 @@ export default function ImageUploader({
                 shadowOpacity: 0.25,
                 shadowRadius: 6,
                 elevation: 6,
-                borderWidth: 2,
+                borderWidth: 1.5,
                 borderColor: `${COLORS.primary}30`,
               }}
             >
@@ -185,110 +190,128 @@ export default function ImageUploader({
           )}
         </View>
       ) : (
-        <TouchableOpacity
-          onPress={showImageOptions}
-          className="w-full rounded-3xl justify-center items-center overflow-hidden"
-          style={{
-            borderWidth: 3,
-            borderStyle: "dashed",
-            borderColor: COLORS.primary,
-            backgroundColor: `${COLORS.lightCream}`,
-            minHeight: 280,
-            shadowColor: COLORS.primary,
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.12,
-            shadowRadius: 10,
-            elevation: 4,
-          }}
-          disabled={loading}
-        >
-          <View className="items-center px-6 py-8">
-            <View
-              className="w-24 h-24 rounded-full items-center justify-center mb-5"
+        <View className="w-full">
+          {/* Two Action Buttons */}
+          <View className="flex-row mb-4" style={{ gap: 12 }}>
+            {/* Camera Button */}
+            <TouchableOpacity
+              onPress={takePhoto}
+              disabled={loading}
+              activeOpacity={0.7}
               style={{
-                backgroundColor: `${COLORS.primary}25`,
+                flex: 1,
+                backgroundColor: COLORS.white,
+                borderRadius: 16,
+                padding: 24,
+                alignItems: "center",
                 shadowColor: COLORS.primary,
-                shadowOffset: { width: 0, height: 3 },
-                shadowOpacity: 0.25,
-                shadowRadius: 8,
-                elevation: 4,
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.12,
+                shadowRadius: 20,
+                elevation: 8,
+                borderWidth: 1,
+                borderColor: `${COLORS.primary}15`,
               }}
             >
-              <Ionicons name="camera" size={48} color={COLORS.primary} />
-            </View>
-            <Text
-              className="text-2xl font-extrabold mb-2"
-              style={{ color: COLORS.textPrimary }}
-            >
-              Capture or Upload
-            </Text>
-            <Text
-              className="text-base text-center leading-6 font-medium"
-              style={{ color: COLORS.textSecondary }}
-            >
-              Tap to capture or upload a leaf photo
-            </Text>
-            <View
-              className="mt-4 rounded-full px-5 py-2"
-              style={{ backgroundColor: `${COLORS.primary}15` }}
-            >
-              <Text
-                className="text-sm font-bold"
-                style={{ color: COLORS.primary }}
+              <View
+                className="w-16 h-16 rounded-full items-center justify-center mb-4"
+                style={{
+                  backgroundColor: `${COLORS.primary}15`,
+                }}
               >
-                📸 Get Started
+                <Ionicons name="camera" size={28} color={COLORS.primary} />
+              </View>
+              <Text
+                className="text-base font-extrabold text-center"
+                style={{ color: COLORS.textPrimary }}
+              >
+                Camera
               </Text>
-            </View>
+              <Text
+                className="text-xs font-semibold text-center mt-2"
+                style={{ color: COLORS.textSecondary }}
+              >
+                Take a photo
+              </Text>
+            </TouchableOpacity>
+
+            {/* Gallery Button */}
+            <TouchableOpacity
+              onPress={pickImage}
+              disabled={loading}
+              activeOpacity={0.7}
+              style={{
+                flex: 1,
+                backgroundColor: COLORS.white,
+                borderRadius: 16,
+                padding: 24,
+                alignItems: "center",
+                shadowColor: COLORS.secondary,
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.12,
+                shadowRadius: 20,
+                elevation: 8,
+                borderWidth: 1,
+                borderColor: `${COLORS.secondary}15`,
+              }}
+            >
+              <View
+                className="w-16 h-16 rounded-full items-center justify-center mb-4"
+                style={{
+                  backgroundColor: `${COLORS.secondary}15`,
+                }}
+              >
+                <Ionicons name="images" size={28} color={COLORS.secondary} />
+              </View>
+              <Text
+                className="text-base font-extrabold text-center"
+                style={{ color: COLORS.textPrimary }}
+              >
+                Gallery
+              </Text>
+              <Text
+                className="text-xs font-semibold text-center mt-2"
+                style={{ color: COLORS.textSecondary }}
+              >
+                Choose from library
+              </Text>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        </View>
       )}
 
       {selectedImage && !loading && (
         <TouchableOpacity
           onPress={() => onImageSelected(selectedImage)}
-          activeOpacity={0.8}
+          activeOpacity={0.7}
+          className="mt-5"
           style={{
-            width: 360,
-            height: 50,
             backgroundColor: COLORS.secondary,
-            borderRadius: 12,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
+            borderRadius: 16,
+            paddingVertical: 18,
+            paddingHorizontal: 24,
+            shadowColor: COLORS.secondary,
+            shadowOffset: { width: 0, height: 8 },
             shadowOpacity: 0.3,
-            shadowRadius: 6,
-            elevation: 6,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
+            shadowRadius: 16,
+            elevation: 8,
+            borderWidth: 1,
+            borderColor: `${COLORS.secondary}20`,
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {/* Left Icon */}
-            <Ionicons
-              name="leaf"
-              size={22}
-              color={COLORS.textWhite}
-              style={{ marginRight: 8 }}
-            />
-
-            {/* Text */}
+          <View className="flex-row items-center justify-center">
             <Text
-              style={{
-                color: COLORS.textWhite,
-                fontWeight: "bold",
-                fontSize: 12,
-              }}
+              className="text-lg font-extrabold mx-3"
+              style={{ color: COLORS.white }}
             >
-              Detect Disease
+              <Ionicons name="analytics" size={14} color={COLORS.white} />{" "}
+              Analyze Disease
+              <Ionicons
+                name="arrow-forward-circle"
+                size={14}
+                color={COLORS.white}
+              />
             </Text>
-
-            {/* Right Icon */}
-            <Ionicons
-              name="arrow-forward"
-              size={22}
-              color={COLORS.textWhite}
-              style={{ marginLeft: 8 }}
-            />
           </View>
         </TouchableOpacity>
       )}
