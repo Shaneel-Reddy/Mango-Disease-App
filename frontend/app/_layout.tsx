@@ -50,7 +50,7 @@ export default function RootLayout() {
             ),
           }}
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="stats"
           options={{
             title: "Statistics",
@@ -60,7 +60,7 @@ export default function RootLayout() {
               <Ionicons name="bar-chart" size={size} color={color} />
             ),
           }}
-        />
+        /> */}
       </Tabs>
     </AppProviders>
   );
