@@ -1,0 +1,42 @@
+{
+  "SOOTY MOULD": {
+    "Organic Measures": {
+      "Pest Control": "Regular pruning and destruction of mealybug or hopper colonies.",
+      "Natural Sprays": "Applying neem oil (3%) to remove honeydew and eliminate fungi.",
+      "Biological Agents": "Release Cryptolaemus montrouzieri (mealybug destroyer beetle) to control pests.",
+      "Sanitation": "Keep orchards clean; remove heavily infested twigs if found.",
+      "Irrigation Balance": "Avoid excessive moisture that promotes pest multiplication."
+    },
+    "Chemical Measures": {
+      "Insecticides": "For hoppers and mealybugs, spray dimethoate (0.05%) or imidacloprid (0.005%).",
+      "Fungicides": "Apply copper oxychloride (0.3%) or carbendazim (0.1%) to reduce fungal deposits.",
+      "Timing": "Apply before flowering and post-harvest periods for maximum efficiency."
+    }
+  },
+  "CUTTING WEEVIL": {
+    "Organic Measures": {
+      "Manual Collection": "Handpick and destroy adult weevils early in the season.",
+      "Neem-Based Repellents": "Apply or spray neem seed kernel extract (5%) during pre-monsoon months.",
+      "Traps": "Use light or pheromone traps to monitor adult activity.",
+      "Cultural Practices": "Remove fallen leaves to eliminate pests in pupal stages."
+    },
+    "Chemical Measures": {
+      "Contact Insecticides": "Spray quinalphos (0.05%) or chlorpyrifos (0.04%) to reduce adult population.",
+      "Soil Drench": "Apply imidacloprid (0.3 ml/L) near tree basins to kill larvae.",
+      "Spray Schedule": "Apply during adult emergence and repeat after 15–20 days if infestation persists."
+    }
+  },
+  "GALL MIDGE": {
+    "Organic Measures": {
+      "Pruning": "Remove and burn affected shoots to disrupt life cycles.",
+      "Soil Management": "Deep plough after harvest to expose pupae to sunlight.",
+      "Neem Oil": "Apply neem oil (3%) to reduce egg laying.",
+      "Intercropping": "Plant repellent species like marigold to reduce adult migration."
+    },
+    "Chemical Measures": {
+      "Systemic Insecticides": "Use dimethoate (0.05%) or fipronil (0.005%) at bud initiation stage.",
+      "Contact Sprays": "Apply lambda-cyhalothrin (0.003%) during leaf flush.",
+      "Timing": "Two sprays recommended — one at new leaf flush and another after 15 days."
+    }
+  }
+}

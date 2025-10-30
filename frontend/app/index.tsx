@@ -26,6 +26,7 @@ import { getWeather, type WeatherData } from "@/services/weather";
 import { predictDisease, type PredictionResponse } from "@/services/api";
 import { COLORS } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
+import remediesData from "@/constants/remedies.json";
 
 const { width } = Dimensions.get("window");
 
@@ -1117,6 +1118,211 @@ export default function Index() {
                   </ScrollView>
                 </>
               )}
+
+            {/* Remedies Section */}
+            {prediction.class &&
+              remediesData[
+                prediction.class.toUpperCase() as keyof typeof remediesData
+              ] && (
+                <>
+                  <Animated.View
+                    style={{
+                      backgroundColor: COLORS.white,
+                      borderRadius: 20,
+                      padding: 20,
+                      shadowColor: COLORS.primary,
+                      shadowOffset: { width: 0, height: 8 },
+                      shadowOpacity: 0.12,
+                      shadowRadius: 20,
+                      elevation: 8,
+                      borderWidth: 1,
+                      borderColor: `${COLORS.primary}15`,
+                      marginBottom: 24,
+                      marginTop: 12,
+                    }}
+                  >
+                    <View className="flex-row items-center justify-center">
+                      <Ionicons
+                        name="medical"
+                        size={28}
+                        color={COLORS.primary}
+                      />
+                      <Text
+                        className="text-2xl font-extrabold ml-3"
+                        style={{ color: COLORS.textPrimary }}
+                      >
+                        Recommended Remedies
+                      </Text>
+                    </View>
+                  </Animated.View>
+
+                  <View className="mb-6">
+                    {/* Organic Measures */}
+                    {remediesData[
+                      prediction.class.toUpperCase() as keyof typeof remediesData
+                    ]["Organic Measures"] && (
+                      <Animated.View
+                        style={{
+                          backgroundColor: COLORS.white,
+                          borderRadius: 20,
+                          padding: 20,
+                          shadowColor: "#4CAF50",
+                          shadowOffset: { width: 0, height: 8 },
+                          shadowOpacity: 0.12,
+                          shadowRadius: 20,
+                          elevation: 8,
+                          borderWidth: 1,
+                          borderColor: "#4CAF5015",
+                          marginBottom: 16,
+                        }}
+                      >
+                        <View className="flex-row items-center mb-4">
+                          <Ionicons name="leaf" size={24} color="#4CAF50" />
+                          <Text
+                            className="text-xl font-extrabold ml-3"
+                            style={{ color: COLORS.textPrimary }}
+                          >
+                            Organic Measures
+                          </Text>
+                        </View>
+
+                        <View className="space-y-3">
+                          {Object.entries(
+                            remediesData[
+                              prediction.class.toUpperCase() as keyof typeof remediesData
+                            ]["Organic Measures"]
+                          ).map(([key, value], index) => (
+                            <View
+                              key={index}
+                              style={{
+                                backgroundColor: "#4CAF5008",
+                                borderRadius: 12,
+                                padding: 16,
+                                marginBottom: 8,
+                                borderLeftWidth: 4,
+                                borderLeftColor: "#4CAF50",
+                              }}
+                            >
+                              <Text
+                                className="text-base font-extrabold mb-2"
+                                style={{ color: COLORS.textPrimary }}
+                              >
+                                {key}
+                              </Text>
+                              <Text
+                                className="text-sm leading-5 font-medium"
+                                style={{ color: COLORS.textSecondary }}
+                              >
+                                {value}
+                              </Text>
+                            </View>
+                          ))}
+                        </View>
+                      </Animated.View>
+                    )}
+
+                    {/* Chemical Measures */}
+                    {remediesData[
+                      prediction.class.toUpperCase() as keyof typeof remediesData
+                    ]["Chemical Measures"] && (
+                      <Animated.View
+                        style={{
+                          backgroundColor: COLORS.white,
+                          borderRadius: 20,
+                          padding: 20,
+                          shadowColor: "#FF9800",
+                          shadowOffset: { width: 0, height: 8 },
+                          shadowOpacity: 0.12,
+                          shadowRadius: 20,
+                          elevation: 8,
+                          borderWidth: 1,
+                          borderColor: "#FF980015",
+                          marginBottom: 16,
+                        }}
+                      >
+                        <View className="flex-row items-center mb-4">
+                          <Ionicons name="flask" size={24} color="#FF9800" />
+                          <Text
+                            className="text-xl font-extrabold ml-3"
+                            style={{ color: COLORS.textPrimary }}
+                          >
+                            Chemical Measures
+                          </Text>
+                        </View>
+
+                        <View className="space-y-3">
+                          {Object.entries(
+                            remediesData[
+                              prediction.class.toUpperCase() as keyof typeof remediesData
+                            ]["Chemical Measures"]
+                          ).map(([key, value], index) => (
+                            <View
+                              key={index}
+                              style={{
+                                backgroundColor: "#FF980008",
+                                borderRadius: 12,
+                                padding: 16,
+                                marginBottom: 8,
+                                borderLeftWidth: 4,
+                                borderLeftColor: "#FF9800",
+                              }}
+                            >
+                              <Text
+                                className="text-base font-extrabold mb-2"
+                                style={{ color: COLORS.textPrimary }}
+                              >
+                                {key}
+                              </Text>
+                              <Text
+                                className="text-sm leading-5 font-medium"
+                                style={{ color: COLORS.textSecondary }}
+                              >
+                                {value}
+                              </Text>
+                            </View>
+                          ))}
+                        </View>
+                      </Animated.View>
+                    )}
+
+                    {/* Important Note */}
+                    <Animated.View
+                      style={{
+                        backgroundColor: `${COLORS.primary}10`,
+                        borderRadius: 16,
+                        padding: 16,
+                        flexDirection: "row",
+                        alignItems: "flex-start",
+                        borderWidth: 1,
+                        borderColor: `${COLORS.primary}30`,
+                      }}
+                    >
+                      <Ionicons
+                        name="information-circle"
+                        size={24}
+                        color={COLORS.primary}
+                        style={{ marginRight: 12, marginTop: 2 }}
+                      />
+                      <View className="flex-1">
+                        <Text
+                          className="text-sm font-extrabold mb-1"
+                          style={{ color: COLORS.primary }}
+                        >
+                          Important Note
+                        </Text>
+                        <Text
+                          className="text-sm leading-5 font-medium"
+                          style={{ color: COLORS.textSecondary }}
+                        >
+                          Always consult with agricultural experts before
+                          applying chemical treatments. Follow recommended
+                          dosages and safety precautions.
+                        </Text>
+                      </View>
+                    </Animated.View>
+                  </View>
+                </>
+              )}
           </Animated.View>
         )}
 
@@ -1167,7 +1373,7 @@ export default function Index() {
                     "Ensure good lighting conditions and avoid harsh shadows",
                 },
                 {
-                  icon: "focus",
+                  icon: "scan",
                   title: "Focus on the Leaf",
                   description:
                     "Ensure the leaf is in sharp focus against a plain background",
