@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  RefreshControl,
-  Alert,
-  Animated,
-} from "react-native";
+import { View, Text, ScrollView, RefreshControl, Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
@@ -29,6 +22,21 @@ import {
   type EnvironmentalAlert,
 } from "@/services/alertAnalysis";
 import { COLORS } from "@/constants/colors";
+
+// Unified card style
+const CARD_STYLE = {
+  backgroundColor: COLORS.white,
+  borderRadius: 20,
+  padding: 20,
+  shadowColor: COLORS.primary,
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.12,
+  shadowRadius: 20,
+  elevation: 8,
+  borderWidth: 1,
+  borderColor: `${COLORS.primary}15`,
+  marginBottom: 24,
+};
 
 export default function Alerts() {
   const [loading, setLoading] = useState(true);
@@ -113,7 +121,7 @@ export default function Alerts() {
   useEffect(() => {
     loadData();
 
-    // Entrance animations
+    // Animate
     Animated.parallel([
       Animated.timing(fadeInAnim, {
         toValue: 1,
@@ -186,8 +194,7 @@ export default function Alerts() {
       style={{ backgroundColor: COLORS.background }}
     >
       <StatusBar style="dark" />
-
-      {/* Animated Header Background */}
+      {/* Animated background */}
       <Animated.View
         style={{
           position: "absolute",
@@ -224,10 +231,13 @@ export default function Alerts() {
           end={{ x: 1, y: 1 }}
         />
       </Animated.View>
-
       <Animated.ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingBottom: 40,
+          paddingTop: 18,
+        }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -243,168 +253,215 @@ export default function Alerts() {
         )}
         scrollEventThrottle={16}
       >
-        {/* Hero Header */}
+        {/* Hero Header Card */}
         <Animated.View
           style={{
             opacity: fadeInAnim,
             transform: [{ translateY: slideInAnim }],
-            marginTop: 16,
-            marginBottom: 28,
           }}
         >
-          <View
-            style={{
-              backgroundColor: COLORS.white,
-              borderRadius: 20,
-              padding: 20,
-              shadowColor: COLORS.primary,
-              shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 0.12,
-              shadowRadius: 20,
-              elevation: 8,
-              borderWidth: 1,
-              borderColor: `${COLORS.primary}15`,
-            }}
-          >
-            <View className="flex-row items-center justify-center">
-              <Ionicons name="notifications" size={24} color={COLORS.primary} />
-              <Text
-                className="text-2xl font-extrabold ml-3"
-                style={{ color: COLORS.textPrimary }}
+          <View style={CARD_STYLE}>
+            <LinearGradient
+              colors={[
+                `${COLORS.primary}20`,
+                `${COLORS.accent}15`,
+                `${COLORS.secondary}10`,
+              ]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: 20,
+                opacity: 0.3,
+                zIndex: 0,
+              }}
+            />
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 1,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 5,
+                }}
               >
-                Disease Alerts
-              </Text>
+                <Ionicons
+                  name="notifications"
+                  size={26}
+                  color={COLORS.primary}
+                />
+                <Text
+                  style={{
+                    marginLeft: 12,
+                    fontWeight: "bold",
+                    fontSize: 22,
+                    color: COLORS.textPrimary,
+                  }}
+                >
+                  Disease Alerts
+                </Text>
+              </View>
+              {location && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 10,
+                  }}
+                >
+                  <Ionicons name="location" size={18} color={COLORS.primary} />
+                  <Text
+                    style={{
+                      marginLeft: 6,
+                      fontWeight: "500",
+                      fontSize: 14,
+                      color: COLORS.textSecondary,
+                    }}
+                  >
+                    {formatLocation(location)}
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
         </Animated.View>
 
-        {/* Location Info */}
-        {location && (
-          <Animated.View
-            style={{
-              opacity: fadeInAnim,
-              marginBottom: 20,
-            }}
-          >
-            <View
-              className="rounded-2xl p-4"
-              style={{
-                backgroundColor: COLORS.white,
-                shadowColor: COLORS.primary,
-                shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.1,
-                shadowRadius: 16,
-                elevation: 6,
-                borderWidth: 1,
-                borderColor: `${COLORS.primary}15`,
-              }}
-            >
-              <View className="flex-row items-center">
-                <Ionicons name="location" size={18} color={COLORS.primary} />
-                <Text
-                  className="ml-2 font-bold"
-                  style={{ color: COLORS.textPrimary }}
-                >
-                  {formatLocation(location)}
-                </Text>
-              </View>
-              <Text
-                className="text-sm mt-1"
-                style={{ color: COLORS.textSecondary }}
-              >
-                Showing alerts for your current region
-              </Text>
-            </View>
-          </Animated.View>
-        )}
-
-        {/* Weather & Environmental Status */}
+        {/* Weather & Environmental Status Card */}
         {weather && envStatus && (
-          <Animated.View
-            style={{
-              opacity: fadeInAnim,
-              marginBottom: 24,
-            }}
-          >
-            {/* Weather Cards Row */}
-            <View className="flex-row mb-4" style={{ gap: 12 }}>
-              <View
-                className="flex-1 rounded-2xl p-4 items-center"
+          <Animated.View style={{ opacity: fadeInAnim }}>
+            <View style={CARD_STYLE}>
+              <LinearGradient
+                colors={[
+                  `${COLORS.primary}15`,
+                  `${COLORS.secondary}10`,
+                  "transparent",
+                ]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
                 style={{
-                  backgroundColor: COLORS.white,
-                  shadowColor: COLORS.primary,
-                  shadowOffset: { width: 0, height: 6 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 16,
-                  elevation: 6,
-                  borderWidth: 1,
-                  borderColor: `${COLORS.primary}15`,
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: 20,
+                  opacity: 0.12,
+                  zIndex: 0,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginBottom: 8,
                 }}
               >
-                <Ionicons name="thermometer" size={24} color={COLORS.primary} />
                 <Text
-                  className="text-2xl font-bold mt-2"
-                  style={{ color: COLORS.textPrimary }}
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    color: COLORS.textPrimary,
+                  }}
                 >
-                  {weather.temperature}°C
-                </Text>
-                <Text
-                  className="text-xs"
-                  style={{ color: COLORS.textSecondary }}
-                >
-                  Temperature
+                  🌤️ Current Conditions
                 </Text>
               </View>
-
               <View
-                className="flex-1 rounded-2xl p-4 items-center"
                 style={{
-                  backgroundColor: COLORS.white,
-                  shadowColor: COLORS.secondary,
-                  shadowOffset: { width: 0, height: 6 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 16,
-                  elevation: 6,
-                  borderWidth: 1,
-                  borderColor: `${COLORS.secondary}15`,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: 10,
                 }}
               >
-                <Ionicons name="water" size={24} color={COLORS.secondary} />
-                <Text
-                  className="text-2xl font-bold mt-2"
-                  style={{ color: COLORS.textPrimary }}
+                {/* Temperature */}
+                <View
+                  style={{
+                    flex: 1,
+                    marginRight: 10,
+                    alignItems: "center",
+                    backgroundColor: COLORS.white,
+                    borderRadius: 16,
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: `${COLORS.accent}15`,
+                    elevation: 4,
+                    shadowColor: COLORS.accent,
+                    shadowOpacity: 0.08,
+                  }}
                 >
-                  {weather.humidity}%
-                </Text>
-                <Text
-                  className="text-xs"
-                  style={{ color: COLORS.textSecondary }}
+                  <Ionicons
+                    name="thermometer"
+                    size={22}
+                    color={COLORS.primary}
+                  />
+                  <Text style={{ fontSize: 13, color: COLORS.textSecondary }}>
+                    Temperature
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: "bold",
+                      color: COLORS.textPrimary,
+                    }}
+                  >
+                    {weather.temperature}°C
+                  </Text>
+                </View>
+                {/* Humidity */}
+                <View
+                  style={{
+                    flex: 1,
+                    marginLeft: 10,
+                    alignItems: "center",
+                    backgroundColor: COLORS.white,
+                    borderRadius: 16,
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: `${COLORS.secondary}15`,
+                    elevation: 4,
+                    shadowColor: COLORS.secondary,
+                    shadowOpacity: 0.08,
+                  }}
                 >
-                  Humidity
-                </Text>
+                  <Ionicons name="water" size={22} color={COLORS.secondary} />
+                  <Text style={{ fontSize: 13, color: COLORS.textSecondary }}>
+                    Humidity
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: "bold",
+                      color: COLORS.textPrimary,
+                    }}
+                  >
+                    {weather.humidity}%
+                  </Text>
+                </View>
               </View>
-            </View>
-
-            {/* Environmental Status Card */}
-            <View
-              className="rounded-2xl p-5"
-              style={{
-                backgroundColor:
-                  envStatus.status === "critical"
-                    ? `${COLORS.severityHigh}15`
-                    : envStatus.status === "warning"
-                      ? `${COLORS.severityMedium}15`
-                      : `${COLORS.accent}15`,
-                borderWidth: 2,
-                borderColor:
-                  envStatus.status === "critical"
-                    ? `${COLORS.severityHigh}40`
-                    : envStatus.status === "warning"
-                      ? `${COLORS.severityMedium}40`
-                      : `${COLORS.accent}40`,
-              }}
-            >
-              <View className="flex-row items-center mb-2">
+              {/* Environmental Status */}
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  borderRadius: 16,
+                  padding: 18,
+                  borderWidth: 1,
+                  borderColor: `${COLORS.accent}15`,
+                  marginTop: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
                 <Ionicons
                   name={
                     envStatus.status === "critical"
@@ -423,15 +480,20 @@ export default function Alerts() {
                   }
                 />
                 <Text
-                  className="ml-2 font-bold text-base"
                   style={{
+                    marginLeft: 10,
+                    fontWeight: "bold",
+                    fontSize: 16,
                     color:
                       envStatus.status === "critical"
                         ? COLORS.severityHigh
                         : envStatus.status === "warning"
                           ? COLORS.severityMedium
                           : COLORS.accent,
+                    flexShrink: 1,
                   }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
                 >
                   {envStatus.status === "critical"
                     ? "⚠️ Critical Conditions"
@@ -440,320 +502,251 @@ export default function Alerts() {
                       : "✅ Optimal Conditions"}
                 </Text>
               </View>
-              <Text className="text-sm" style={{ color: COLORS.textPrimary }}>
+              <Text style={{ marginTop: 6, color: COLORS.textPrimary }}>
                 {envStatus.message}
               </Text>
             </View>
           </Animated.View>
         )}
 
-        {/* Alert Summary */}
-        <Animated.View
-          style={{
-            opacity: fadeInAnim,
-            marginBottom: 24,
-          }}
-        >
-          <View
-            className="rounded-2xl p-5"
-            style={{
-              backgroundColor: COLORS.white,
-              shadowColor: COLORS.primary,
-              shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 0.12,
-              shadowRadius: 20,
-              elevation: 8,
-              borderWidth: 1,
-              borderColor: `${COLORS.primary}15`,
-            }}
-          >
-            <Text
-              className="text-lg font-bold mb-4"
-              style={{ color: COLORS.textPrimary }}
+        {/* Alert Summary Card */}
+        <Animated.View style={{ opacity: fadeInAnim }}>
+          <View style={CARD_STYLE}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 8,
+              }}
             >
-              📊 Alert Summary
-            </Text>
-
-            <View className="flex-row justify-between">
-              <View className="items-center flex-1">
-                <Text
-                  className="text-3xl font-bold"
-                  style={{ color: COLORS.severityHigh }}
+              <Ionicons name="bar-chart" size={22} color={COLORS.primary} />
+              <Text
+                style={{
+                  marginLeft: 10,
+                  fontWeight: "bold",
+                  fontSize: 18,
+                  color: COLORS.textPrimary,
+                }}
+              >
+                📊 Alert Summary
+              </Text>
+            </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              {/* Stats */}
+              {[
+                ["High", stats.high, COLORS.severityHigh],
+                ["Medium", stats.medium, COLORS.severityMedium],
+                ["Low", stats.low, COLORS.severityLow],
+                ["Total", stats.total, COLORS.textPrimary],
+              ].map(([label, value, color], idx) => (
+                <View
+                  style={{ alignItems: "center", flex: 1 }}
+                  key={String(label)}
                 >
-                  {stats.high}
-                </Text>
-                <Text
-                  className="text-xs mt-1"
-                  style={{ color: COLORS.textSecondary }}
-                >
-                  High Risk
-                </Text>
-              </View>
-
-              <View className="items-center flex-1">
-                <Text
-                  className="text-3xl font-bold"
-                  style={{ color: COLORS.severityMedium }}
-                >
-                  {stats.medium}
-                </Text>
-                <Text
-                  className="text-xs mt-1"
-                  style={{ color: COLORS.textSecondary }}
-                >
-                  Medium Risk
-                </Text>
-              </View>
-
-              <View className="items-center flex-1">
-                <Text
-                  className="text-3xl font-bold"
-                  style={{ color: COLORS.severityLow }}
-                >
-                  {stats.low}
-                </Text>
-                <Text
-                  className="text-xs mt-1"
-                  style={{ color: COLORS.textSecondary }}
-                >
-                  Low Risk
-                </Text>
-              </View>
-
-              <View className="items-center flex-1">
-                <Text
-                  className="text-3xl font-bold"
-                  style={{ color: COLORS.textPrimary }}
-                >
-                  {stats.total}
-                </Text>
-                <Text
-                  className="text-xs mt-1"
-                  style={{ color: COLORS.textSecondary }}
-                >
-                  Total
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      fontSize: 30,
+                      fontWeight: "bold",
+                      color: String(color),
+                    }}
+                  >
+                    {value}
+                  </Text>
+                  <Text style={{ fontSize: 12, color: COLORS.textSecondary }}>
+                    {label} Risk
+                  </Text>
+                </View>
+              ))}
             </View>
           </View>
         </Animated.View>
 
-        {/* Environmental Alerts Section */}
+        {/* Environmental Alerts */}
         {environmentalAlerts.length > 0 && (
-          <Animated.View
-            style={{
-              opacity: fadeInAnim,
-              marginBottom: 24,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: COLORS.white,
-                borderRadius: 20,
-                padding: 20,
-                shadowColor: COLORS.severityHigh,
-                shadowOffset: { width: 0, height: 8 },
-                shadowOpacity: 0.12,
-                shadowRadius: 20,
-                elevation: 8,
-                borderWidth: 1,
-                borderColor: `${COLORS.severityHigh}15`,
-                marginBottom: 16,
-              }}
-            >
-              <View className="flex-row items-center justify-center">
+          <Animated.View style={{ opacity: fadeInAnim }}>
+            <View style={CARD_STYLE}>
+              <LinearGradient
+                colors={[
+                  `${COLORS.severityHigh}20`,
+                  `${COLORS.accent}15`,
+                  `${COLORS.secondary}10`,
+                ]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: 20,
+                  opacity: 0.15,
+                  zIndex: 0,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 10,
+                }}
+              >
                 <Ionicons
                   name="warning"
                   size={20}
                   color={COLORS.severityHigh}
                 />
                 <Text
-                  className="text-xl font-extrabold ml-2"
-                  style={{ color: COLORS.textPrimary }}
+                  style={{
+                    marginLeft: 7,
+                    fontSize: 17,
+                    fontWeight: "bold",
+                    color: COLORS.textPrimary,
+                  }}
                 >
                   🌡️ Real-Time Environmental Alerts
                 </Text>
               </View>
               <Text
-                className="text-center text-sm mt-2"
-                style={{ color: COLORS.textSecondary }}
+                style={{
+                  marginBottom: 10,
+                  color: COLORS.textSecondary,
+                  textAlign: "center",
+                }}
               >
                 Based on current weather conditions
               </Text>
+              {environmentalAlerts.map((alert, idx) => (
+                <EnvironmentalAlertCard key={`env-${idx}`} alert={alert} />
+              ))}
             </View>
-
-            {environmentalAlerts.map((alert, index) => (
-              <EnvironmentalAlertCard key={`env-${index}`} alert={alert} />
-            ))}
           </Animated.View>
         )}
 
         {/* Seasonal Alerts Section */}
         {alerts.length > 0 && (
-          <Animated.View
-            style={{
-              opacity: fadeInAnim,
-              marginBottom: 24,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: COLORS.white,
-                borderRadius: 20,
-                padding: 20,
-                shadowColor: COLORS.primary,
-                shadowOffset: { width: 0, height: 8 },
-                shadowOpacity: 0.12,
-                shadowRadius: 20,
-                elevation: 8,
-                borderWidth: 1,
-                borderColor: `${COLORS.primary}15`,
-                marginBottom: 16,
-              }}
-            >
-              <View className="flex-row items-center justify-center">
+          <Animated.View style={{ opacity: fadeInAnim }}>
+            <View style={CARD_STYLE}>
+              <LinearGradient
+                colors={[
+                  `${COLORS.primary}20`,
+                  `${COLORS.accent}15`,
+                  `${COLORS.secondary}10`,
+                ]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: 20,
+                  opacity: 0.12,
+                  zIndex: 0,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 10,
+                }}
+              >
                 <Ionicons name="calendar" size={20} color={COLORS.primary} />
                 <Text
-                  className="text-xl font-extrabold ml-2"
-                  style={{ color: COLORS.textPrimary }}
+                  style={{
+                    marginLeft: 7,
+                    fontSize: 17,
+                    fontWeight: "bold",
+                    color: COLORS.textPrimary,
+                  }}
                 >
-                  � Seasonal Alerts
+                  📅 Seasonal Alerts
                 </Text>
               </View>
               <Text
-                className="text-center text-sm mt-2"
-                style={{ color: COLORS.textSecondary }}
+                style={{
+                  marginBottom: 10,
+                  color: COLORS.textSecondary,
+                  textAlign: "center",
+                }}
               >
                 Region-specific seasonal disease patterns
               </Text>
+              {alerts
+                .sort((a, b) => {
+                  const severityOrder: Record<string, number> = {
+                    high: 3,
+                    medium: 2,
+                    low: 1,
+                  };
+                  return (
+                    (severityOrder[b.severity] || 0) -
+                    (severityOrder[a.severity] || 0)
+                  );
+                })
+                .map((alert, idx) => (
+                  <AlertCard key={`seasonal-${idx}`} alert={alert} />
+                ))}
             </View>
-
-            {alerts
-              .sort((a, b) => {
-                const severityOrder: Record<string, number> = {
-                  high: 3,
-                  medium: 2,
-                  low: 1,
-                };
-                return (
-                  (severityOrder[b.severity] || 0) -
-                  (severityOrder[a.severity] || 0)
-                );
-              })
-              .map((alert, index) => (
-                <AlertCard key={`seasonal-${index}`} alert={alert} />
-              ))}
           </Animated.View>
         )}
 
-        {/* No Alerts State */}
+        {/* No Alerts Message Card */}
         {environmentalAlerts.length === 0 && alerts.length === 0 && (
-          <Animated.View
-            style={{
-              opacity: fadeInAnim,
-              alignItems: "center",
-              paddingVertical: 48,
-            }}
-          >
-            <Ionicons
-              name="checkmark-circle-outline"
-              size={80}
-              color={COLORS.accent}
-            />
-            <Text
-              className="text-2xl font-bold mt-4 text-center"
-              style={{ color: COLORS.textPrimary }}
+          <Animated.View style={{ opacity: fadeInAnim }}>
+            <View
+              style={{
+                ...CARD_STYLE,
+                alignItems: "center",
+                padding: 28,
+              }}
             >
-              No Active Alerts
-            </Text>
-            <Text
-              className="text-center mt-3 leading-6 px-8"
-              style={{ color: COLORS.textSecondary }}
-            >
-              Great news! There are currently no pest or disease alerts for your
-              region.
-            </Text>
-            <Text
-              className="text-sm text-center mt-4 px-8"
-              style={{ color: COLORS.textLight }}
-            >
-              Keep monitoring your mango trees regularly for early detection.
-            </Text>
-          </Animated.View>
-        )}
-
-        {/* Information Section */}
-        <Animated.View
-          style={{
-            opacity: fadeInAnim,
-            marginBottom: 24,
-          }}
-        >
-          <View
-            className="rounded-2xl p-5"
-            style={{
-              backgroundColor: `${COLORS.primary}10`,
-              borderWidth: 1,
-              borderColor: `${COLORS.primary}20`,
-            }}
-          >
-            <View className="flex-row items-center mb-3">
               <Ionicons
-                name="information-circle"
-                size={22}
-                color={COLORS.primary}
+                name="checkmark-circle-outline"
+                size={80}
+                color={COLORS.accent}
               />
               <Text
-                className="ml-2 font-bold text-base"
-                style={{ color: COLORS.textPrimary }}
+                style={{
+                  fontSize: 22,
+                  fontWeight: "bold",
+                  marginTop: 18,
+                  color: COLORS.textPrimary,
+                  textAlign: "center",
+                }}
               >
-                About These Alerts
+                No Active Alerts
+              </Text>
+              <Text
+                style={{
+                  marginTop: 10,
+                  color: COLORS.textSecondary,
+                  textAlign: "center",
+                }}
+              >
+                Great news! There are currently no pest or disease alerts for
+                your region.
+              </Text>
+              <Text
+                style={{
+                  marginTop: 13,
+                  fontSize: 13,
+                  color: COLORS.textLight,
+                  textAlign: "center",
+                }}
+              >
+                Keep monitoring your mango trees regularly for early detection.
               </Text>
             </View>
-            <Text
-              className="text-sm leading-6"
-              style={{ color: COLORS.textPrimary }}
-            >
-              These alerts combine real-time environmental analysis with
-              seasonal patterns and regional disease outbreaks. Environmental
-              alerts are based on current weather conditions, while seasonal
-              alerts follow known disease patterns for your region. Regular
-              monitoring and preventive measures can help protect your mango
-              trees from potential threats.
-            </Text>
-          </View>
-        </Animated.View>
-
-        {/* Last Updated */}
-        <View className="items-center pb-6">
-          <Text className="text-xs" style={{ color: COLORS.textLight }}>
-            Last updated: {new Date().toLocaleString()}
-          </Text>
-        </View>
-
-        {/* Footer */}
-        <Animated.View
-          style={{
-            marginTop: 20,
-            alignItems: "center",
-          }}
-        >
-          <Text
-            className="text-lg font-extrabold mb-1"
-            style={{ color: COLORS.textPrimary }}
-          >
-            MangoCare 🥭
-          </Text>
-          <Text
-            className="text-sm text-center font-medium"
-            style={{ color: COLORS.textSecondary, maxWidth: 280 }}
-          >
-            Protecting your mango orchard with intelligent disease monitoring
-          </Text>
-          <Text className="mt-2 text-base" style={{ color: COLORS.primary }}>
-            🌱🍃🍂🍁🌿
-          </Text>
-        </Animated.View>
+          </Animated.View>
+        )}
       </Animated.ScrollView>
     </SafeAreaView>
   );

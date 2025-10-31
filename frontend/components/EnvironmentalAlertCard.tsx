@@ -53,62 +53,77 @@ export default function EnvironmentalAlertCard({
   const severityColor = getSeverityColor(alert.severity);
 
   return (
-    <View
-      className="rounded-3xl overflow-hidden mb-4"
-      style={{
-        backgroundColor: COLORS.white,
-        shadowColor: severityColor,
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.15,
-        shadowRadius: 20,
-        elevation: 8,
-        borderWidth: 1,
-        borderColor: `${severityColor}20`,
-      }}
-    >
-      {/* Gradient Background Accent */}
-      <LinearGradient
-        colors={[`${severityColor}08`, "transparent"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        className="absolute inset-0"
-      />
-
-      <View className="p-5">
-        {/* Header with Disease Name and Severity */}
-        <View className="flex-row items-start justify-between mb-4">
-          <View className="flex-row items-center flex-1 mr-3">
-            <View
-              className="w-12 h-12 rounded-2xl items-center justify-center"
-              style={{ backgroundColor: `${severityColor}15` }}
+    <View style={{ marginBottom: 24 }}>
+      {/* Disease & Severity Card */}
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          borderRadius: 20,
+          shadowColor: severityColor,
+          shadowOffset: { width: 0, height: 7 },
+          shadowOpacity: 0.15,
+          shadowRadius: 16,
+          elevation: 7,
+          borderWidth: 1,
+          borderColor: `${severityColor}20`,
+          marginBottom: 16,
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
+        <LinearGradient
+          colors={[`${severityColor}12`, "transparent"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            borderRadius: 20,
+            opacity: 0.2,
+            zIndex: 0,
+          }}
+        />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 18,
+            zIndex: 1,
+          }}
+        >
+          
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "bold",
+                color: COLORS.textPrimary,
+                marginBottom: 2,
+                flexWrap: "wrap",
+              }}
+              numberOfLines={2}
+              ellipsizeMode="tail"
             >
-              <Ionicons
-                name={getDiseaseIcon(alert.disease)}
-                size={24}
-                color={severityColor}
-              />
-            </View>
-            <View className="flex-1 ml-3">
-              <Text
-                className="text-lg font-bold"
-                style={{ color: COLORS.textPrimary }}
-                numberOfLines={2}
-              >
-                {alert.disease}
-              </Text>
-              <Text
-                className="text-xs mt-1"
-                style={{ color: COLORS.textSecondary }}
-              >
-                {alert.conditions.season} • {alert.confidence}% confidence
-              </Text>
-            </View>
+              {alert.disease}
+            </Text>
+            <Text style={{ fontSize: 12, color: COLORS.textSecondary }}>
+              {alert.conditions.season} &bull; {alert.confidence}% confidence
+            </Text>
           </View>
-
           {/* Severity Badge */}
           <View
-            className="px-3 py-2 rounded-xl flex-row items-center"
-            style={{ backgroundColor: `${severityColor}20` }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: `${severityColor}20`,
+              paddingHorizontal: 13,
+              paddingVertical: 7,
+              borderRadius: 14,
+              marginLeft: 12,
+            }}
           >
             <Ionicons
               name={getSeverityIcon(alert.severity)}
@@ -116,164 +131,304 @@ export default function EnvironmentalAlertCard({
               color={severityColor}
             />
             <Text
-              className="ml-1.5 font-bold text-xs uppercase"
-              style={{ color: severityColor }}
+              style={{
+                marginLeft: 5,
+                fontWeight: "bold",
+                fontSize: 12,
+                color: severityColor,
+                textTransform: "uppercase",
+              }}
             >
               {alert.severity}
             </Text>
           </View>
         </View>
+      </View>
 
-        {/* Environmental Conditions */}
-        <View
-          className="flex-row rounded-2xl p-3 mb-4"
-          style={{ backgroundColor: `${COLORS.primary}08` }}
-        >
-          <View className="flex-1 items-center">
-            <Ionicons name="thermometer" size={20} color={COLORS.primary} />
-            <Text
-              className="text-lg font-bold mt-1"
-              style={{ color: COLORS.textPrimary }}
-            >
-              {alert.conditions.temperature}°C
-            </Text>
-            <Text className="text-xs" style={{ color: COLORS.textSecondary }}>
-              Temperature
-            </Text>
-          </View>
-
+      {/* Environmental Conditions Card */}
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          borderRadius: 20,
+          shadowColor: COLORS.primary,
+          shadowOffset: { width: 0, height: 7 },
+          shadowOpacity: 0.08,
+          shadowRadius: 14,
+          elevation: 6,
+          borderWidth: 1,
+          borderColor: `${COLORS.primary}15`,
+          marginBottom: 16,
+          overflow: "hidden",
+        }}
+      >
+        <LinearGradient
+          colors={[`${COLORS.primary}08`, "transparent"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            borderRadius: 20,
+            opacity: 0.1,
+            zIndex: 0,
+          }}
+        />
+        <View style={{ padding: 15, zIndex: 1 }}>
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: "bold",
+              marginBottom: 8,
+              color: COLORS.textPrimary,
+            }}
+          >
+            🌡️ Current Conditions
+          </Text>
           <View
-            className="w-px mx-2"
-            style={{ backgroundColor: `${COLORS.primary}20` }}
-          />
-
-          <View className="flex-1 items-center">
-            <Ionicons name="water" size={20} color={COLORS.secondary} />
-            <Text
-              className="text-lg font-bold mt-1"
-              style={{ color: COLORS.textPrimary }}
-            >
-              {alert.conditions.humidity}%
-            </Text>
-            <Text className="text-xs" style={{ color: COLORS.textSecondary }}>
-              Humidity
-            </Text>
-          </View>
-
-          <View
-            className="w-px mx-2"
-            style={{ backgroundColor: `${COLORS.primary}20` }}
-          />
-
-          <View className="flex-1 items-center">
-            <Ionicons
-              name={alert.conditions.inMonsoon ? "rainy" : "sunny"}
-              size={20}
-              color={alert.conditions.inMonsoon ? "#64B5F6" : "#FFB74D"}
+            style={{
+              flexDirection: "row",
+              backgroundColor: `${COLORS.primary}08`,
+              borderRadius: 16,
+              paddingVertical: 8,
+              paddingHorizontal: 4,
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            {/* Temperature */}
+            <View style={{ alignItems: "center", flex: 1 }}>
+              <Ionicons name="thermometer" size={21} color={COLORS.primary} />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: COLORS.textPrimary,
+                }}
+              >
+                {alert.conditions.temperature}°C
+              </Text>
+              <Text style={{ fontSize: 11, color: COLORS.textSecondary }}>
+                Temperature
+              </Text>
+            </View>
+            {/* Divider */}
+            <View
+              style={{
+                width: 1,
+                height: 40,
+                backgroundColor: `${COLORS.primary}22`,
+                marginHorizontal: 9,
+              }}
             />
-            <Text
-              className="text-xs font-bold mt-1"
-              style={{ color: COLORS.textPrimary }}
-            >
-              {alert.conditions.inMonsoon ? "Monsoon" : "Dry"}
-            </Text>
-            <Text className="text-xs" style={{ color: COLORS.textSecondary }}>
-              Season
-            </Text>
+            {/* Humidity */}
+            <View style={{ alignItems: "center", flex: 1 }}>
+              <Ionicons name="water" size={21} color={COLORS.secondary} />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: COLORS.textPrimary,
+                }}
+              >
+                {alert.conditions.humidity}%
+              </Text>
+              <Text style={{ fontSize: 11, color: COLORS.textSecondary }}>
+                Humidity
+              </Text>
+            </View>
+            {/* Divider */}
+            <View
+              style={{
+                width: 1,
+                height: 40,
+                backgroundColor: `${COLORS.primary}22`,
+                marginHorizontal: 9,
+              }}
+            />
+            {/* Season */}
+            <View style={{ alignItems: "center", flex: 1 }}>
+              <Ionicons
+                name={alert.conditions.inMonsoon ? "rainy" : "sunny"}
+                size={21}
+                color={alert.conditions.inMonsoon ? "#64B5F6" : "#FFB74D"}
+              />
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: "bold",
+                  color: COLORS.textPrimary,
+                }}
+              >
+                {alert.conditions.inMonsoon ? "Monsoon" : "Dry"}
+              </Text>
+              <Text style={{ fontSize: 11, color: COLORS.textSecondary }}>
+                Season
+              </Text>
+            </View>
           </View>
         </View>
+      </View>
 
-        {/* Description */}
-        <View className="mb-4">
-          <View className="flex-row items-center mb-2">
-            <Ionicons
-              name="information-circle"
-              size={18}
-              color={COLORS.primary}
-            />
+      {/* What's Happening Card */}
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          borderRadius: 20,
+          shadowColor: COLORS.primary,
+          shadowOffset: { width: 0, height: 7 },
+          shadowOpacity: 0.08,
+          shadowRadius: 14,
+          elevation: 6,
+          borderWidth: 1,
+          borderColor: `${COLORS.primary}15`,
+          marginBottom: 16,
+        }}
+      >
+        <LinearGradient
+          colors={[`${COLORS.primary}07`, "transparent"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            borderRadius: 20,
+            opacity: 0.12,
+            zIndex: 0,
+          }}
+        />
+        <View style={{ padding: 15, zIndex: 1 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 8,
+            }}
+          >
+            <View
+              style={{
+                width: 31,
+                height: 31,
+                borderRadius: 15,
+                backgroundColor: `${COLORS.primary}12`,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Ionicons
+                name="information-circle"
+                size={18}
+                color={COLORS.primary}
+              />
+            </View>
             <Text
-              className="ml-2 font-bold text-sm"
-              style={{ color: COLORS.textPrimary }}
+              style={{
+                marginLeft: 10,
+                fontWeight: "bold",
+                fontSize: 15,
+                color: COLORS.textPrimary,
+              }}
             >
               What's Happening
             </Text>
           </View>
           <Text
-            className="text-sm leading-6"
-            style={{ color: COLORS.textSecondary }}
+            style={{
+              color: COLORS.textSecondary,
+              fontSize: 13,
+              lineHeight: 20,
+            }}
           >
             {alert.description}
           </Text>
         </View>
+      </View>
 
-        {/* Remedial Plan */}
-        <View
-          className="rounded-2xl p-4"
+      {/* Action Plan Card */}
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          borderRadius: 20,
+          shadowColor: COLORS.accent,
+          shadowOffset: { width: 0, height: 7 },
+          shadowOpacity: 0.09,
+          shadowRadius: 12,
+          elevation: 6,
+          borderWidth: 1,
+          borderColor: `${COLORS.accent}14`,
+        }}
+      >
+        <LinearGradient
+          colors={[`${COLORS.accent}09`, "transparent"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
           style={{
-            backgroundColor: `${COLORS.accent}10`,
-            borderWidth: 1,
-            borderColor: `${COLORS.accent}20`,
+            position: "absolute",
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            borderRadius: 20,
+            opacity: 0.15,
+            zIndex: 0,
           }}
-        >
-          <View className="flex-row items-center mb-3">
-            <Ionicons name="shield-checkmark" size={20} color={COLORS.accent} />
+        />
+        <View style={{ padding: 15, zIndex: 1 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 8,
+            }}
+          >
+            <Ionicons name="shield-checkmark" size={18} color={COLORS.accent} />
             <Text
-              className="ml-2 font-bold text-base"
-              style={{ color: COLORS.textPrimary }}
+              style={{
+                marginLeft: 10,
+                fontWeight: "bold",
+                fontSize: 15,
+                color: COLORS.textPrimary,
+              }}
             >
               Action Plan
             </Text>
           </View>
-
-          {/* Parse and display remedial steps */}
-          {alert.remedialPlan.split("\n").map((step, index) => {
-            const trimmedStep = step.trim();
-            if (!trimmedStep) return null;
-
-            return (
-              <View key={index} className="flex-row mb-2.5">
+          <View>
+            {alert.remedialPlan.split("\n").map((step, index) => {
+              const trimmedStep = step.trim();
+              if (!trimmedStep) return null;
+              return (
                 <View
-                  className="w-6 h-6 rounded-full items-center justify-center mr-3 mt-0.5"
-                  style={{ backgroundColor: `${COLORS.accent}20` }}
+                  key={index}
+                  style={{
+                    backgroundColor: `${COLORS.accent}08`,
+                    borderLeftWidth: 3,
+                    borderLeftColor: COLORS.accent,
+                    padding: 10,
+                    borderRadius: 14,
+                    marginBottom: 8,
+                    flexDirection: "row",
+                  }}
                 >
                   <Text
-                    className="text-xs font-bold"
-                    style={{ color: COLORS.accent }}
+                    style={{
+                      color: COLORS.textPrimary,
+                      fontSize: 13,
+                      flex: 1,
+                      lineHeight: 18,
+                    }}
                   >
-                    {trimmedStep.startsWith("•") ? "•" : index + 1}
+                    {trimmedStep.replace(/^[•\-]\s*/, "")}
                   </Text>
                 </View>
-                <Text
-                  className="flex-1 text-sm leading-5"
-                  style={{ color: COLORS.textPrimary }}
-                >
-                  {trimmedStep.replace(/^[•\-]\s*/, "")}
-                </Text>
-              </View>
-            );
-          })}
-        </View>
-
-        {/* Confidence Indicator */}
-        <View className="mt-4 flex-row items-center justify-center">
-          <View
-            className="h-2 flex-1 rounded-full overflow-hidden"
-            style={{ backgroundColor: `${COLORS.primary}15` }}
-          >
-            <View
-              className="h-full rounded-full"
-              style={{
-                width: `${alert.confidence}%`,
-                backgroundColor: severityColor,
-              }}
-            />
+              );
+            })}
           </View>
-          <Text
-            className="ml-3 text-xs font-semibold"
-            style={{ color: COLORS.textSecondary }}
-          >
-            {alert.confidence}% Match
-          </Text>
         </View>
       </View>
     </View>

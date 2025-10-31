@@ -263,7 +263,7 @@ export default function Index() {
             marginBottom: 28,
           }}
         >
-          {/* Tagline Card with Premium Design */}
+          {/* Tagline Card */}
           <Animated.View
             style={{
               backgroundColor: COLORS.white,
@@ -276,7 +276,9 @@ export default function Index() {
               elevation: 8,
               borderWidth: 1,
               borderColor: `${COLORS.primary}15`,
-              transform: [{ translateY: weatherAnim3 }], // Smooth animation continuity
+              transform: [{ translateY: weatherAnim3 }],
+              position: "relative",
+              overflow: "hidden",
             }}
           >
             {/* Gradient Border Accent */}
@@ -288,25 +290,32 @@ export default function Index() {
               ]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              className="absolute inset-0 rounded-3xl"
-              style={{ opacity: 0.6 }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: 20,
+                opacity: 0.6,
+                zIndex: 0,
+              }}
             />
 
             {/* Tagline Text */}
-            <View className="px-4">
+            <View style={{ zIndex: 1 }}>
               <Text
-                className="text-center text-[15px] font-semibold leading-6 tracking-wide"
                 style={{
                   color: COLORS.textPrimary,
+                  fontSize: 15,
+                  fontWeight: "600",
                   lineHeight: 22,
                   letterSpacing: 0.3,
+                  textAlign: "center",
                 }}
               >
                 Detect mango leaf diseases instantly with{" "}
-                <Text
-                  className="font-extrabold"
-                  style={{ color: COLORS.primary }}
-                >
+                <Text style={{ color: COLORS.primary, fontWeight: "800" }}>
                   AI-powered analysis
                 </Text>
                 . Get expert recommendations and real-time environmental
@@ -325,13 +334,13 @@ export default function Index() {
               marginBottom: 28,
             }}
           >
-            {/* Section Header with Icon */}
-            {/* Section Header with Premium Design */}
+            {/* Section Header Card */}
             <Animated.View
               style={{
                 backgroundColor: COLORS.white,
                 borderRadius: 20,
-                padding: 20,
+                paddingVertical: 20,
+                paddingHorizontal: 16,
                 shadowColor: COLORS.primary,
                 shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.12,
@@ -339,24 +348,30 @@ export default function Index() {
                 elevation: 8,
                 borderWidth: 1,
                 borderColor: `${COLORS.primary}15`,
-                transform: [{ translateY: weatherAnim1 }], // First animation for section start
+                transform: [{ translateY: weatherAnim1 }],
                 marginBottom: 24,
+                alignItems: "center",
               }}
             >
-              <View className="flex-row items-center justify-center">
-                {/* Title */}
-                <Text
-                  className="text-2xl font-extrabold"
-                  style={{ color: COLORS.textPrimary }}
-                >
-                  Local Conditions
-                </Text>
-              </View>
+              <Text
+                style={{
+                  color: COLORS.textPrimary,
+                  fontWeight: "300",
+                  fontSize: 22,
+                }}
+              >
+                Local Conditions
+              </Text>
             </Animated.View>
 
+            {/* Cards Row */}
             <View
-              className="flex-row justify-between mt-6 mb-6"
-              style={{ gap: 12 }}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginVertical: 16,
+                gap: 12,
+              }}
             >
               {/* Temperature Card */}
               <Animated.View
@@ -364,7 +379,8 @@ export default function Index() {
                   flex: 1,
                   backgroundColor: COLORS.white,
                   borderRadius: 16,
-                  padding: 20,
+                  paddingVertical: 24,
+                  paddingHorizontal: 16,
                   alignItems: "center",
                   shadowColor: COLORS.primary,
                   shadowOffset: { width: 0, height: 8 },
@@ -376,16 +392,25 @@ export default function Index() {
                   transform: [{ translateY: weatherAnim1 }],
                 }}
               >
-                <Ionicons name="thermometer" size={24} color={COLORS.primary} />
+                <Ionicons name="thermometer" size={28} color={COLORS.primary} />
                 <Text
-                  className="text-lg font-semibold mb-2 text-center"
-                  style={{ color: COLORS.textSecondary }}
+                  style={{
+                    color: COLORS.textSecondary,
+                    fontWeight: "600",
+                    fontSize: 16,
+                    marginVertical: 8,
+                    textAlign: "center",
+                  }}
                 >
                   Temperature
                 </Text>
                 <Text
-                  className="text-2xl font-extrabold text-center"
-                  style={{ color: COLORS.primary }}
+                  style={{
+                    color: COLORS.primary,
+                    fontWeight: "900",
+                    fontSize: 28,
+                    textAlign: "center",
+                  }}
                 >
                   {weather.temperature.toFixed(1)}°C
                 </Text>
@@ -397,7 +422,8 @@ export default function Index() {
                   flex: 1,
                   backgroundColor: COLORS.white,
                   borderRadius: 16,
-                  padding: 20,
+                  paddingVertical: 24,
+                  paddingHorizontal: 16,
                   alignItems: "center",
                   shadowColor: COLORS.secondary,
                   shadowOffset: { width: 0, height: 8 },
@@ -409,55 +435,31 @@ export default function Index() {
                   transform: [{ translateY: weatherAnim2 }],
                 }}
               >
-                <Ionicons name="water" size={24} color={COLORS.secondary} />
-
+                <Ionicons name="water" size={28} color={COLORS.secondary} />
                 <Text
-                  className="text-lg font-semibold mb-2 text-center"
-                  style={{ color: COLORS.textSecondary }}
+                  style={{
+                    color: COLORS.textSecondary,
+                    fontWeight: "600",
+                    fontSize: 16,
+                    marginVertical: 8,
+                    textAlign: "center",
+                  }}
                 >
                   Humidity
                 </Text>
                 <Text
-                  className="text-2xl font-extrabold text-center"
-                  style={{ color: COLORS.secondary }}
+                  style={{
+                    color: COLORS.secondary,
+                    fontWeight: "900",
+                    fontSize: 28,
+                    textAlign: "center",
+                  }}
                 >
                   {weather.humidity.toFixed(1)}%
                 </Text>
               </Animated.View>
 
-              {/* Leaf Wetness Card */}
-              <Animated.View
-                style={{
-                  flex: 1,
-                  backgroundColor: COLORS.white,
-                  borderRadius: 16,
-                  padding: 20,
-                  alignItems: "center",
-                  shadowColor: "#64B5F6",
-                  shadowOffset: { width: 0, height: 8 },
-                  shadowOpacity: 0.12,
-                  shadowRadius: 20,
-                  elevation: 8,
-                  borderWidth: 1,
-                  borderColor: "#64B5F630",
-                  transform: [{ translateY: weatherAnim3 }],
-                }}
-              >
-                <Ionicons name="leaf" size={24} color="#64B5F6" />
-
-                <Text
-                  className="text-lg font-semibold mb-2 text-center"
-                  style={{ color: COLORS.textSecondary }}
-                >
-                  Leaf Wetness
-                </Text>
-                <Text
-                  className="text-2xl font-extrabold text-center"
-                  style={{ color: "#64B5F6" }}
-                >
-                  Dry
-                </Text>
-              </Animated.View>
+             
             </View>
 
             {/* Location Info Card */}
@@ -474,33 +476,48 @@ export default function Index() {
                   elevation: 8,
                   borderWidth: 1,
                   borderColor: `${COLORS.primary}15`,
-                  transform: [{ translateY: weatherAnim3 }], // Reuse last animation for smooth flow
+                  transform: [{ translateY: weatherAnim3 }],
                   marginTop: 20,
+                  overflow: "hidden",
                 }}
               >
                 {/* Location Header */}
-                <View className="flex-row items-center mb-6 ">
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 20,
+                  }}
+                >
                   <LinearGradient
                     colors={[`${COLORS.primary}20`, `${COLORS.primary}10`]}
-                    className="rounded-full p-3 mr-4"
+                    style={{ borderRadius: 50, padding: 14, marginRight: 16 }}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                  ></LinearGradient>
-                  <View className="flex-1">
+                  >
+                    <Ionicons
+                      name="location-sharp"
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  </LinearGradient>
+                  <View style={{ flex: 1 }}>
                     <Text
-                      className="text-xl font-extrabold"
-                      style={{ color: COLORS.textPrimary }}
+                      style={{
+                        color: COLORS.textPrimary,
+                        fontWeight: "800",
+                        fontSize: 18,
+                      }}
                     >
-                      <Ionicons
-                        name="location-sharp"
-                        size={14}
-                        color={COLORS.primary}
-                      />{" "}
                       {formatLocation(location)}
                     </Text>
                     <Text
-                      className="text-sm font-semibold mt-1"
-                      style={{ color: COLORS.textSecondary }}
+                      style={{
+                        color: COLORS.textSecondary,
+                        fontSize: 13,
+                        fontWeight: "600",
+                        marginTop: 4,
+                      }}
                     >
                       Current Position
                     </Text>
@@ -509,46 +526,58 @@ export default function Index() {
 
                 {/* Divider */}
                 <View
-                  className="h-0.5 mb-6"
-                  style={{ backgroundColor: `${COLORS.primary}15` }}
+                  style={{
+                    height: 1,
+                    backgroundColor: `${COLORS.primary}15`,
+                    marginBottom: 20,
+                  }}
                 />
 
-                {/* Coordinates - 2 Cards in Row */}
-                <View className="flex-row" style={{ gap: 12 }}>
+                {/* Latitude and Longitude */}
+                <View style={{ flexDirection: "row", gap: 12 }}>
                   {/* Latitude Card */}
                   <Animated.View
                     style={{
                       flex: 1,
-                      backgroundColor: `${COLORS.white}95`,
+                      backgroundColor: `${COLORS.white}F0`,
                       borderRadius: 16,
-                      padding: 26,
+                      paddingVertical: 26,
+                      paddingHorizontal: 16,
                       alignItems: "center",
                       borderWidth: 1,
                       borderColor: `${COLORS.primary}20`,
-                      minHeight: 72,
-                      justifyContent: "center",
                       shadowColor: COLORS.primary,
                       shadowOffset: { width: 0, height: 4 },
                       shadowOpacity: 0.08,
                       shadowRadius: 12,
                       elevation: 4,
+                      justifyContent: "center",
                       transform: [{ translateY: weatherAnim1 }],
                     }}
                   >
                     <Ionicons
                       name="navigate"
-                      size={20}
+                      size={22}
                       color={COLORS.primary}
                     />
                     <Text
-                      className="text-xs font-semibold mb-2 text-center"
-                      style={{ color: COLORS.textSecondary }}
+                      style={{
+                        fontSize: 12,
+                        fontWeight: "700",
+                        color: COLORS.textSecondary,
+                        marginVertical: 8,
+                        textAlign: "center",
+                      }}
                     >
                       Latitude
                     </Text>
                     <Text
-                      className="text-lg font-extrabold text-center"
-                      style={{ color: COLORS.primary }}
+                      style={{
+                        fontSize: 20,
+                        fontWeight: "900",
+                        color: COLORS.primary,
+                        textAlign: "center",
+                      }}
                     >
                       {location.latitude.toFixed(3)}°
                     </Text>
@@ -558,36 +587,45 @@ export default function Index() {
                   <Animated.View
                     style={{
                       flex: 1,
-                      backgroundColor: `${COLORS.white}95`,
+                      backgroundColor: `${COLORS.white}F0`,
                       borderRadius: 16,
-                      padding: 26,
+                      paddingVertical: 26,
+                      paddingHorizontal: 16,
                       alignItems: "center",
                       borderWidth: 1,
                       borderColor: `${COLORS.primary}20`,
-                      minHeight: 72,
-                      justifyContent: "center",
                       shadowColor: COLORS.primary,
                       shadowOffset: { width: 0, height: 4 },
                       shadowOpacity: 0.08,
                       shadowRadius: 12,
                       elevation: 4,
+                      justifyContent: "center",
                       transform: [{ translateY: weatherAnim2 }],
                     }}
                   >
                     <Ionicons
                       name="navigate-outline"
-                      size={20}
+                      size={22}
                       color={COLORS.primary}
                     />
                     <Text
-                      className="text-xs font-semibold mb-2 text-center"
-                      style={{ color: COLORS.textSecondary }}
+                      style={{
+                        fontSize: 12,
+                        fontWeight: "700",
+                        color: COLORS.textSecondary,
+                        marginVertical: 8,
+                        textAlign: "center",
+                      }}
                     >
                       Longitude
                     </Text>
                     <Text
-                      className="text-lg font-extrabold text-center"
-                      style={{ color: COLORS.primary }}
+                      style={{
+                        fontSize: 20,
+                        fontWeight: "900",
+                        color: COLORS.primary,
+                        textAlign: "center",
+                      }}
                     >
                       {location.longitude.toFixed(3)}°
                     </Text>
