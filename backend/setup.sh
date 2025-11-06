@@ -31,3 +31,7 @@ echo ""
 echo "🚀 To start the server:"
 echo "   source venv/bin/activate"
 echo "   python app.py"
+
+
+
+ip : ipconfig getifaddr en0 
